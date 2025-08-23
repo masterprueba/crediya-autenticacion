@@ -19,7 +19,7 @@ public class RegistrarUsuarioUseCase {
                             if (existe) {
                                 return Mono.error(new IllegalArgumentException("El correo electrónico ya existe"));
                             }
-                            return repo.save(val);
+                            return repo.saveTransactional(val);
                         })
                 );
     }
