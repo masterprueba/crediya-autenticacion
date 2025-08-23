@@ -3,8 +3,6 @@ package co.com.crediya.autenticacion.config;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.mockito.Mockito;
