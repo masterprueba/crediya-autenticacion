@@ -29,14 +29,17 @@ public class RegistrarUsuarioUseCase {
         if (u.getSalario() == null ||
                 u.getSalario().compareTo(BigDecimal.ZERO) < 0 ||
                 u.getSalario().compareTo(new BigDecimal("15000000")) > 0) {
-            System.out.println("salario_invalido");
+            return Mono.error(new IllegalArgumentException("El salario debe estar entre 0 y 15,000,000"));
         }
-        if (u.getNombres() == null || u.getNombres().isBlank())
-            System.out.println("nombres_requeridos");
-        if (u.getApellidos() == null || u.getApellidos().isBlank())
-            System.out.println("apellidos_requeridos");
-        if (u.getEmail() == null || u.getEmail().isBlank())
-            System.out.println("correo_requerido");
+        if (u.getNombres() == null || u.getNombres().isBlank()) {
+            return Mono.error(new IllegalArgumentException("Los nombres son requeridos"));
+        }
+        if (u.getApellidos() == null || u.getApellidos().isBlank()) {
+            return Mono.error(new IllegalArgumentException("Los apellidos son requeridos"));
+        }
+        if (u.getEmail() == null || u.getEmail().isBlank()) {
+            return Mono.error(new IllegalArgumentException("El correo electrónico es requerido"));
+        }
         return Mono.just(u);
     }
 }

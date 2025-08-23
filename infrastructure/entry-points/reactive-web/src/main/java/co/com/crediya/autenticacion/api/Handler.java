@@ -26,6 +26,7 @@ public class Handler {
                 .doOnNext(dto -> log.info("registrar-usuario intento correo={}", dto.correo_electronico()))
                 .flatMap(this::toDomain)
                 .flatMap(useCase::ejecutar)
+                .doOnSuccess(u -> log.info("registrar-usuario exitoso correo={}", u.getEmail()))
                 .flatMap(u -> ServerResponse.created(URI.create("/api/v1/usuarios/" + u.getId())).build());
     }
 

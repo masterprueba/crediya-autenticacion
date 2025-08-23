@@ -34,7 +34,7 @@ class RouterRestTest {
         );
 
         var usuarioGuardado = new Usuario();
-        usuarioGuardado.setId("test-id");
+        usuarioGuardado.setId(1L);
 
         Mockito.when(registrarUsuarioUseCase.ejecutar(Mockito.any(Usuario.class)))
                .thenReturn(Mono.just(usuarioGuardado));
@@ -45,6 +45,6 @@ class RouterRestTest {
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isCreated()
-                .expectHeader().location("/api/v1/usuarios/test-id");
+                .expectHeader().location("/api/v1/usuarios/1");
     }
 }
