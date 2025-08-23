@@ -2,8 +2,6 @@ package co.com.crediya.autenticacion.api.error;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -26,7 +24,6 @@ import reactor.core.publisher.Mono;
 @Component
 @Order(-2)
 public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
-    private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     public GlobalExceptionHandler(ErrorAttributes errorAttributes,
                                   WebProperties webProperties,

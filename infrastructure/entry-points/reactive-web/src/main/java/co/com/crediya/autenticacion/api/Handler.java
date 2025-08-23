@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.api;
 
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
+import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,7 @@ import java.time.Instant;
 public class Handler {
     private final RegistrarUsuarioUseCase useCase;
     private static final Logger log = LoggerFactory.getLogger(Handler.class);
+    private final UsuarioMapper usuarioMapper;
 
     @Operation(
             summary = "Registrar un nuevo usuario",
@@ -85,17 +87,18 @@ public class Handler {
     public Mono<ServerResponse> registrar(ServerRequest req) {
         return req.bodyToMono(RegistrarUsuarioRequest.class)
                 .doOnNext(dto -> log.info("registrar-usuario intento correo={}", dto.correo_electronico()))
-                .flatMap(this::toDomain)
+                .map(this::toDomain)
                 .flatMap(useCase::ejecutar)
                 .doOnSuccess(u -> log.info("registrar-usuario exitoso correo={}", u.getEmail()))
                 .flatMap(u -> ServerResponse.created(URI.create("/api/v1/usuarios/" + u.getId())).build());
     }
 
-    private Mono<Usuario> toDomain(RegistrarUsuarioRequest r) {
-        return Mono.just(new Usuario(
-                null, r.nombres(), r.apellidos(),
-                r.telefono(), r.correo_electronico(), r.fecha_nacimiento(), r.direccion(), r.documento_identidad(),
-                2L,r.salario_base(),Instant.now()
-        ));
+    private Usuario toDomain(RegistrarUsuarioRequest registrarUsuarioRequest) {
+        Usuario usuario = usuarioMapper.toDomain(registrarUsuarioRequest);
+        usuario.setIdRol(2L);
+        usuario.setCreado(Instant.now());
+        return usuario;
     }
+
+
 }

@@ -46,15 +46,4 @@ class RouterRestTest {
         // Verificamos que el RouterFunction fue creado (la configuración de rutas es interna de Spring)
         assertTrue(routerFunction.toString().contains("POST"));
     }
-
-    @Test
-    @DisplayName("Debe inyectar Handler correctamente")
-    void debeInyectarHandlerCorrectamente() {
-        // Arrange & Act
-        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(handler);
-
-        // Assert
-        assertNotNull(routerFunction);
-        // El handler se inyecta correctamente si no hay excepción
-    }
 }

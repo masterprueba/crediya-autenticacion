@@ -21,7 +21,7 @@ public class RegistrarUsuarioUseCase {
                 .flatMap(this::validar)
                 .flatMap(val -> repo.existsByCorreo(val.getEmail())
                         .flatMap(existe -> {
-                            if (existe) {
+                            if (Boolean.TRUE.equals(existe)) {
                                 return Mono.error(new DomainException("El correo electrónico ya existe"));
                             }
                             return repo.saveTransactional(val);

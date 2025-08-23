@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.api;
 
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
+import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mapstruct.factory.Mappers;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
@@ -28,7 +30,8 @@ class HandlerTest {
 
     @BeforeEach
     void setUp() {
-        handler = new Handler(registrarUsuarioUseCase);
+        UsuarioMapper usuarioMapper = Mappers.getMapper(UsuarioMapper.class);
+        handler = new Handler(registrarUsuarioUseCase, usuarioMapper);
     }
 
     @Test
@@ -160,14 +163,9 @@ class HandlerTest {
         assertEquals(new BigDecimal("5000000.50"), usuarioMapeado.getSalario());
     }
 
-    /**
-     * Método helper para invocar el método privado toDomain usando reflexión
-     */
-    @SuppressWarnings("unchecked")
     private Usuario invocarToDomain(RegistrarUsuarioRequest request) throws Exception {
-        Method toDomainMethod = Handler.class.getDeclaredMethod("toDomain", RegistrarUsuarioRequest.class);
-        toDomainMethod.setAccessible(true);
-        Mono<Usuario> usuarioMono = (Mono<Usuario>) toDomainMethod.invoke(handler, request);
-        return usuarioMono.block();
+        Method method = Handler.class.getDeclaredMethod("toDomain", RegistrarUsuarioRequest.class);
+        method.setAccessible(true);
+        return (Usuario) method.invoke(handler, request);
     }
 }
