@@ -94,7 +94,7 @@ public class Handler {
     private Mono<Usuario> toDomain(RegistrarUsuarioRequest r) {
         return Mono.just(new Usuario(
                 null, r.nombres(), r.apellidos(),
-                r.telefono(), r.correo_electronico(), r.documento_identidad(),
+                r.telefono(), r.correo_electronico(), r.fecha_nacimiento(), r.direccion(), r.documento_identidad(),
                 2L,r.salario_base(),Instant.now()
         ));
     }

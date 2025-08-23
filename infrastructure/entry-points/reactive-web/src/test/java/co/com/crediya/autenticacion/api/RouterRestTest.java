@@ -31,7 +31,7 @@ class RouterRestTest {
     void testRegistrarUsuario() {
         var request = new RegistrarUsuarioRequest(
                 "Test", "User",
-                "3125856984","test.user@example.com","123416546546", 1L,new BigDecimal("50000")
+                "3125856984",LocalDate.now(),"cra 23 #45-67","test.user@example.com","123416546546", 1L,new BigDecimal("50000")
         );
 
         var usuarioGuardado = new Usuario();
