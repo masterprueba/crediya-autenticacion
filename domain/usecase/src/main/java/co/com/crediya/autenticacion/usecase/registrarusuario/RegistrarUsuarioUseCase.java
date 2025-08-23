@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.usecase.registrarusuario;
 
 import co.com.crediya.autenticacion.model.usuario.Usuario;
+import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,7 @@ public class RegistrarUsuarioUseCase {
                 .flatMap(val -> repo.existsByCorreo(val.getEmail())
                         .flatMap(existe -> {
                             if (existe) {
-                                return Mono.error(new IllegalArgumentException("El correo electrónico ya existe"));
+                                return Mono.error(new DomainException("El correo electrónico ya existe"));
                             }
                             return repo.saveTransactional(val);
                         })
@@ -33,19 +34,19 @@ public class RegistrarUsuarioUseCase {
         if (u.getSalario() == null ||
                 u.getSalario().compareTo(BigDecimal.ZERO) < 0 ||
                 u.getSalario().compareTo(new BigDecimal("15000000")) > 0) {
-            return Mono.error(new IllegalArgumentException("El salario base debe estar entre 0 y 15,000,000"));
+            return Mono.error(new DomainException("El salario base debe estar entre 0 y 15,000,000"));
         }
         if (u.getNombres() == null || u.getNombres().isBlank()) {
-            return Mono.error(new IllegalArgumentException("Los nombres son requeridos"));
+            return Mono.error(new DomainException("Los nombres son requeridos"));
         }
         if (u.getApellidos() == null || u.getApellidos().isBlank()) {
-            return Mono.error(new IllegalArgumentException("Los apellidos son requeridos"));
+            return Mono.error(new DomainException("Los apellidos son requeridos"));
         }
         if (u.getEmail() == null || u.getEmail().trim().isEmpty()) {
-            return Mono.error(new IllegalArgumentException("El campo 'correo_electronico' es requerido."));
+            return Mono.error(new DomainException("El campo 'correo_electronico' es requerido."));
         }
         if (!EMAIL_PATTERN.matcher(u.getEmail()).matches()) {
-            return Mono.error(new IllegalArgumentException("El formato del correo electrónico no es válido."));
+            return Mono.error(new DomainException("El formato del correo electrónico no es válido."));
         }
         return Mono.just(u);
     }
