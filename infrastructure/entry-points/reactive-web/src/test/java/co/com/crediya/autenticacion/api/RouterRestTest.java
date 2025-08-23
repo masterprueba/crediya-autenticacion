@@ -14,6 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @ContextConfiguration(classes = {RouterRest.class, Handler.class})
@@ -29,8 +30,8 @@ class RouterRestTest {
     @Test
     void testRegistrarUsuario() {
         var request = new RegistrarUsuarioRequest(
-                "Test", "User", LocalDate.now(), "123 Main St", "555-1234",
-                "test.user@example.com", new BigDecimal("50000")
+                "Test", "User",
+                "3125856984","test.user@example.com","123416546546", 1L,new BigDecimal("50000")
         );
 
         var usuarioGuardado = new Usuario();
