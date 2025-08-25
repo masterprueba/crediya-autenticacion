@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.api;
 
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
+import co.com.crediya.autenticacion.api.dto.UsuarioResponse;
 import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
@@ -95,6 +96,57 @@ public class Handler {
                 .flatMap(u -> ServerResponse.created(URI.create("/api/v1/usuarios/" + u.getId())).build());
     }
 
+    @Operation(
+            summary = "Consultar Por Email",
+            description = "Consulta un usuario con el rol de cliente en el sistema con la información proporcionada. " +
+                    "Valida que todos los campos sean obligatorios ",
+            operationId = "consultarPorEmail"
+    )
+    @RequestBody(
+            required = true,
+            description = "Datos del usuario para la consulta",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = UsuarioResponse.class)
+            )
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Consulta exitosa"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos de entrada inválidos. Puede ser por: email no encontrado o " +
+                            "Usuario no es cliente.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(example = """
+                                    {
+                                      "status": 400,
+                                      "codigo": "DATOS_INVALIDOS",
+                                      "mensaje": "La información proporcionada es inválida. Usuario no enocntrado",
+                                      "ruta": "/api/v1/usuarios/cliente"
+                                    }
+                                    """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Error interno del servidor",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(example = """
+                                    {
+                                      "status": 500,
+                                      "codigo": "ERROR_INTERNO",
+                                      "mensaje": "Ha ocurrido un error inesperado en el sistema. Por favor, contacte a soporte.",
+                                      "ruta": "/api/v1/usuarios/cliente"
+                                    }
+                                    """)
+                    )
+            )
+    })
     public Mono<ServerResponse> consultarPorEmail(ServerRequest req) {
         log.info("consultaPorEmail pathh: {}",req.path());
         String email = req.queryParam("email").orElseThrow(() -> new IllegalArgumentException("El parámetro 'email' es requerido"));
