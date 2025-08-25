@@ -1,7 +1,6 @@
 package co.com.crediya.autenticacion.model.usuario.validation;
 
 import co.com.crediya.autenticacion.model.usuario.Usuario;
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
 import reactor.core.publisher.Mono;
 
 @FunctionalInterface

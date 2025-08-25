@@ -54,7 +54,7 @@ class MyReactiveRepositoryAdapterTest {
         entity.setId(10L);
         when(mapper.map(eq(usuario), any())).thenReturn(entity);
         when(repository.save(entity)).thenReturn(Mono.just(entity));
-        when(mapper.map(eq(entity), eq(Usuario.class))).thenReturn(usuario.toBuilder().id(10L).build());
+        when(mapper.map(entity, Usuario.class)).thenReturn(usuario.toBuilder().id(10L).build());
         when(transactionalOperator.transactional(any(Mono.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
@@ -85,7 +85,7 @@ class MyReactiveRepositoryAdapterTest {
         entity.setId(7L);
         entity.setEmail("x@y.com");
         when(repository.findByEmail("x@y.com")).thenReturn(Mono.just(entity));
-        when(mapper.map(eq(entity), eq(Usuario.class))).thenReturn(Usuario.builder().id(7L).email("x@y.com").build());
+        when(mapper.map(entity, Usuario.class)).thenReturn(Usuario.builder().id(7L).email("x@y.com").build());
 
         StepVerifier.create(adapter.findByEmail("x@y.com"))
                 .expectNextMatches(u -> u.getId() == 7L && u.getEmail().equals("x@y.com"))

@@ -148,7 +148,6 @@ public class Handler {
             )
     })
     public Mono<ServerResponse> consultarPorEmail(ServerRequest req) {
-        log.info("consultaPorEmail pathh: {}",req.path());
         String email = req.queryParam("email").orElseThrow(() -> new IllegalArgumentException("El parámetro 'email' es requerido"));
         return consultarUseCase.ejecutar(email)
                 .map(usuarioMapper::toResponse)
