@@ -3,6 +3,7 @@ package co.com.crediya.autenticacion.api;
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
 import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
+import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +28,8 @@ import java.time.Instant;
 @RequiredArgsConstructor
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con la gestión de usuarios")
 public class Handler {
-    private final RegistrarUsuarioUseCase useCase;
+    private final RegistrarUsuarioUseCase registrarUseCase;
+    private final ConsultarUsuarioUseCase consultarUseCase;
     private static final Logger log = LoggerFactory.getLogger(Handler.class);
     private final UsuarioMapper usuarioMapper;
 
@@ -88,16 +90,25 @@ public class Handler {
         return req.bodyToMono(RegistrarUsuarioRequest.class)
                 .doOnNext(dto -> log.info("registrar-usuario intento correo={}", dto.correo_electronico()))
                 .map(this::toDomain)
-                .flatMap(useCase::ejecutar)
+                .flatMap(registrarUseCase::ejecutar)
                 .doOnSuccess(u -> log.info("registrar-usuario exitoso correo={}", u.getEmail()))
                 .flatMap(u -> ServerResponse.created(URI.create("/api/v1/usuarios/" + u.getId())).build());
     }
 
+    public Mono<ServerResponse> consultarPorEmail(ServerRequest req) {
+        log.info("consultaPorEmail pathh: {}",req.path());
+        String email = req.queryParam("email").orElseThrow(() -> new IllegalArgumentException("El parámetro 'email' es requerido"));
+        return consultarUseCase.ejecutar(email)
+                .map(usuarioMapper::toResponse)
+                .flatMap(response -> ServerResponse.ok().bodyValue(response));
+    }
+
     private Usuario toDomain(RegistrarUsuarioRequest registrarUsuarioRequest) {
         Usuario usuario = usuarioMapper.toDomain(registrarUsuarioRequest);
-        usuario.setIdRol(2L);
-        usuario.setCreado(Instant.now());
-        return usuario;
+        return usuario.toBuilder()
+                .idRol(2L)
+                .creado(Instant.now())
+                .build();
     }
 
 

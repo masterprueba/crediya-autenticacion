@@ -3,6 +3,7 @@ package co.com.crediya.autenticacion.api;
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
 import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
+import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,12 +27,15 @@ class HandlerTest {
     @Mock
     private RegistrarUsuarioUseCase registrarUsuarioUseCase;
 
+    @Mock
+    private ConsultarUsuarioUseCase consultarUsuarioUseCase;
+
     private Handler handler;
 
     @BeforeEach
     void setUp() {
         UsuarioMapper usuarioMapper = Mappers.getMapper(UsuarioMapper.class);
-        handler = new Handler(registrarUsuarioUseCase, usuarioMapper);
+        handler = new Handler(registrarUsuarioUseCase, consultarUsuarioUseCase, usuarioMapper);
     }
 
     @Test

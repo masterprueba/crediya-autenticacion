@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.api.mapper;
 
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
+import co.com.crediya.autenticacion.api.dto.UsuarioResponse;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,4 +16,7 @@ public interface UsuarioMapper {
     @Mapping(source = "salario_base",target = "salario")
     @Mapping(source = "correo_electronico",target = "email")
     Usuario toDomain(RegistrarUsuarioRequest r);
+
+    @Mapping(target = "nombreCompleto", expression = "java(usuario.getNombres() + \" \" + usuario.getApellidos())")
+    UsuarioResponse toResponse(Usuario usuario);
 }

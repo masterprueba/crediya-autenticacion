@@ -48,14 +48,14 @@ class MyReactiveRepositoryAdapterTest {
     void debeVerificarSiExistePorCorreoCuandoElCorreoExiste() {
         // Arrange
         String email = "juan.perez@example.com";
-        when(repository.countByCorreo(email)).thenReturn(Mono.just(1L));
+        when(repository.countByEmail(email)).thenReturn(Mono.just(1L));
 
         // Act & Assert
         StepVerifier.create(adapter.existsByCorreo(email))
                 .expectNext(true)
                 .verifyComplete();
 
-        verify(repository).countByCorreo(email);
+        verify(repository).countByEmail(email);
     }
 
     @Test
@@ -63,14 +63,14 @@ class MyReactiveRepositoryAdapterTest {
     void debeVerificarSiExistePorCorreoCuandoElCorreoNoExiste() {
         // Arrange
         String email = "nuevo.usuario@example.com";
-        when(repository.countByCorreo(email)).thenReturn(Mono.just(0L));
+        when(repository.countByEmail(email)).thenReturn(Mono.just(0L));
 
         // Act & Assert
         StepVerifier.create(adapter.existsByCorreo(email))
                 .expectNext(false)
                 .verifyComplete();
 
-        verify(repository).countByCorreo(email);
+        verify(repository).countByEmail(email);
     }
 }
 
