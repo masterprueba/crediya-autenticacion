@@ -3,6 +3,7 @@ package co.com.crediya.autenticacion.api;
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
 import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
+import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import org.springframework.http.MediaType;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
+import org.springframework.mock.web.server.MockServerWebExchange;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
+import org.springframework.web.reactive.function.server.HandlerStrategies;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests unitarios para Handler")
@@ -26,12 +35,15 @@ class HandlerTest {
     @Mock
     private RegistrarUsuarioUseCase registrarUsuarioUseCase;
 
+    @Mock
+    private ConsultarUsuarioUseCase consultarUsuarioUseCase;
+
     private Handler handler;
 
     @BeforeEach
     void setUp() {
         UsuarioMapper usuarioMapper = Mappers.getMapper(UsuarioMapper.class);
-        handler = new Handler(registrarUsuarioUseCase, usuarioMapper);
+        handler = new Handler(registrarUsuarioUseCase, consultarUsuarioUseCase, usuarioMapper);
     }
 
     @Test
@@ -167,5 +179,100 @@ class HandlerTest {
         Method method = Handler.class.getDeclaredMethod("toDomain", RegistrarUsuarioRequest.class);
         method.setAccessible(true);
         return (Usuario) method.invoke(handler, request);
+    }
+
+    @Test
+    @DisplayName("consultarPorEmail debe responder 200 y body UsuarioResponse")
+    void consultarPorEmailDebeResponderOk() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+                .nombres("Juan").apellidos("Pérez").email("juan@example.com").documentoIdentidad("123")
+                .build();
+        when(consultarUsuarioUseCase.ejecutar("juan@example.com")).thenReturn(Mono.just(usuario));
+
+        MockServerHttpRequest httpRequest = MockServerHttpRequest
+                .get("/usuarios/cliente?email=juan@example.com")
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(httpRequest);
+        ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
+
+        // Act
+        Mono<ServerResponse> responseMono = handler.consultarPorEmail(serverRequest);
+
+        // Assert: escribir respuesta al exchange y verificar
+        ServerResponse response = responseMono.block();
+        assertNotNull(response);
+        response.writeTo(exchange, new ServerResponse.Context() {
+            @Override
+            public java.util.List<org.springframework.http.codec.HttpMessageWriter<?>> messageWriters() {
+                return HandlerStrategies.withDefaults().messageWriters();
+            }
+
+            @Override
+            public java.util.List<org.springframework.web.reactive.result.view.ViewResolver> viewResolvers() {
+                return HandlerStrategies.withDefaults().viewResolvers();
+            }
+        }).block();
+        assertEquals(200, exchange.getResponse().getStatusCode().value());
+    }
+
+    @Test
+    @DisplayName("consultarPorEmail sin email debe retornar error al escribir respuesta")
+    void consultarPorEmailSinEmail() {
+        MockServerHttpRequest httpRequest = MockServerHttpRequest
+                .get("/usuarios/cliente")
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(httpRequest);
+        ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
+
+        assertThrows(IllegalArgumentException.class, () -> handler.consultarPorEmail(serverRequest));
+    }
+
+    @Test
+    @DisplayName("registrar debe responder 201 cuando se crea usuario")
+    void registrarDebeResponderCreated() {
+        // Arrange
+        String json = """
+            {
+              "nombres": "Ana",
+              "apellidos": "García",
+              "telefono": "+57",
+              "fecha_nacimiento": "1990-01-01",
+              "direccion": "Calle",
+              "correo_electronico": "ana@example.com",
+              "documento_identidad": "999",
+              "rol": 2,
+              "salario_base": 1000
+            }
+            """;
+
+        Usuario guardado = Usuario.builder().id(1L).email("ana@example.com").build();
+        when(registrarUsuarioUseCase.ejecutar(any(Usuario.class))).thenReturn(Mono.just(guardado));
+
+        MockServerHttpRequest httpRequest = MockServerHttpRequest
+                .post("/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(json);
+        MockServerWebExchange exchange = MockServerWebExchange.from(httpRequest);
+        ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
+
+        // Act
+        Mono<ServerResponse> responseMono = handler.registrar(serverRequest);
+
+        // Assert
+        ServerResponse response = responseMono.block();
+        assertNotNull(response);
+        response.writeTo(exchange, new ServerResponse.Context() {
+            @Override
+            public java.util.List<org.springframework.http.codec.HttpMessageWriter<?>> messageWriters() {
+                return HandlerStrategies.withDefaults().messageWriters();
+            }
+
+            @Override
+            public java.util.List<org.springframework.web.reactive.result.view.ViewResolver> viewResolvers() {
+                return HandlerStrategies.withDefaults().viewResolvers();
+            }
+        }).block();
+        assertEquals(201, exchange.getResponse().getStatusCode().value());
     }
 }

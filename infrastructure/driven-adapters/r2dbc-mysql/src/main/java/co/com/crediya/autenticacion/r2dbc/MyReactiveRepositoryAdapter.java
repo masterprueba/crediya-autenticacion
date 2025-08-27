@@ -56,9 +56,26 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<Boolean> existsByCorreo(String correoElectronico) {
-        return repository.countByCorreo(correoElectronico)
+        return repository.countByEmail(correoElectronico)
                          .map(count -> count > 0);
     }
 
-   
+    @Override
+    public Mono<Usuario> findByEmail(String email) {
+        Mono<UsuarioEntity> user = repository.findByEmail(email);
+        return user
+                .map(this::toEntity)
+                .doOnNext(u -> log.info("Usuario encontrado: {}", u))
+                .doOnSuccess(u -> {               // se ejecuta al completar exitosamente
+                    if (u != null) {
+                        log.info("Usuario encontrado id={} email={}", u.getId(), u.getEmail());
+                    } else {
+                        log.warn("Usuario NO encontrado email={}", email); // Mono.empty()
+                    }
+                })
+                .doOnError(e -> log.error("Error consultando usuario email={}", email, e));
+
+    }
+
+
 }

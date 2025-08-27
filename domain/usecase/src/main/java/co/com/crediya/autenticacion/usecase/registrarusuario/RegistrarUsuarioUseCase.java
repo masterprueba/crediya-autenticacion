@@ -3,51 +3,24 @@ package co.com.crediya.autenticacion.usecase.registrarusuario;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
+import co.com.crediya.autenticacion.model.usuario.validation.UsuarioValidations;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
-
-import java.math.BigDecimal;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class RegistrarUsuarioUseCase {
     private final UsuarioRepository repo;
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
-    );
 
     public Mono<Usuario> ejecutar(Usuario u) {
-        return Mono.just(u)
-                .flatMap(this::validar)
-                .flatMap(val -> repo.existsByCorreo(val.getEmail())
+        return UsuarioValidations.completa()
+                .validate(u)
+                .flatMap(usuario -> repo.existsByCorreo(usuario.getEmail())
                         .flatMap(existe -> {
                             if (Boolean.TRUE.equals(existe)) {
                                 return Mono.error(new DomainException("El correo electrónico ya existe"));
                             }
-                            return repo.saveTransactional(val);
+                            return repo.saveTransactional(usuario);
                         })
                 );
-    }
-
-    private Mono<Usuario> validar(Usuario u) {
-        // Reglas de negocio adicionales (p.ej. salario 0..15'000.000)
-        if (u.getSalario() == null ||
-                u.getSalario().compareTo(BigDecimal.ZERO) < 0 ||
-                u.getSalario().compareTo(new BigDecimal("15000000")) > 0) {
-            return Mono.error(new DomainException("El salario base debe estar entre 0 y 15,000,000"));
-        }
-        if (u.getNombres() == null || u.getNombres().isBlank()) {
-            return Mono.error(new DomainException("Los nombres son requeridos"));
-        }
-        if (u.getApellidos() == null || u.getApellidos().isBlank()) {
-            return Mono.error(new DomainException("Los apellidos son requeridos"));
-        }
-        if (u.getEmail() == null || u.getEmail().trim().isEmpty()) {
-            return Mono.error(new DomainException("El campo 'correo_electronico' es requerido."));
-        }
-        if (!EMAIL_PATTERN.matcher(u.getEmail()).matches()) {
-            return Mono.error(new DomainException("El formato del correo electrónico no es válido."));
-        }
-        return Mono.just(u);
     }
 }
