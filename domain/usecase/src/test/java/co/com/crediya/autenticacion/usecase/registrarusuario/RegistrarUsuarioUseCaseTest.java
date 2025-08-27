@@ -1,7 +1,7 @@
 package co.com.crediya.autenticacion.usecase.registrarusuario;
 
 import co.com.crediya.autenticacion.model.usuario.Usuario;
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

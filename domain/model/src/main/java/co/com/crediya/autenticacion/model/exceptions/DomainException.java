@@ -1,4 +1,4 @@
-package co.com.crediya.autenticacion.model.usuario.exceptions;
+package co.com.crediya.autenticacion.model.exceptions;
 
 public class DomainException extends RuntimeException {
 

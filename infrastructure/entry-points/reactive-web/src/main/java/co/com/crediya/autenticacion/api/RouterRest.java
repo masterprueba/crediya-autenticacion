@@ -20,18 +20,18 @@ public class RouterRest {
             @RouterOperation(
                     path = "/usuarios",
                     method = RequestMethod.POST,
-                    beanClass = Handler.class,
+                    beanClass = UsuarioHandler.class,
                     beanMethod = "registrar"
             ),
             @RouterOperation(
                     path = "/usuarios/cliente",
                     method = RequestMethod.GET,
-                    beanClass = Handler.class,
+                    beanClass = UsuarioHandler.class,
                     beanMethod = "consultarPorEmail"
             )
     })
-    public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return RouterFunctions.route(POST("/usuarios"), handler::registrar)
-                .andRoute(GET("/usuarios/cliente"), handler::consultarPorEmail);
+    public RouterFunction<ServerResponse> routerFunction(UsuarioHandler usuarioHandler) {
+        return RouterFunctions.route(POST("/usuarios"), usuarioHandler::registrar)
+                .andRoute(GET("/usuarios/cliente"), usuarioHandler::consultarPorEmail);
     }
 }

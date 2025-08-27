@@ -1,5 +1,6 @@
 package co.com.crediya.autenticacion.r2dbc;
 
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,7 +75,7 @@ class MyReactiveRepositoryAdapterTest {
                 .thenAnswer(inv -> inv.getArgument(0));
 
         StepVerifier.create(adapter.saveTransactional(usuario))
-                .expectError(co.com.crediya.autenticacion.model.usuario.exceptions.DomainException.class)
+                .expectError(DomainException.class)
                 .verify();
     }
 

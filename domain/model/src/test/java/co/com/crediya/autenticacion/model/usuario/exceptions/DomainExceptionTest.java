@@ -1,5 +1,6 @@
 package co.com.crediya.autenticacion.model.usuario.exceptions;
 
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 

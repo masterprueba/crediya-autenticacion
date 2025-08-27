@@ -1,7 +1,7 @@
 package co.com.crediya.autenticacion.usecase.consultarusuario;
 
 import co.com.crediya.autenticacion.model.usuario.Usuario;
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;

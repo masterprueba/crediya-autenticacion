@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RouterRestTest {
 
     @Mock
-    private Handler handler;
+    private UsuarioHandler usuarioHandler;
 
     private RouterRest routerRest;
 
@@ -29,7 +29,7 @@ class RouterRestTest {
     @DisplayName("Debe crear RouterFunction correctamente")
     void debeCrearRouterFunctionCorrectamente() {
         // Act
-        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(handler);
+        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler);
 
         // Assert
         assertNotNull(routerFunction);
@@ -39,7 +39,7 @@ class RouterRestTest {
     @DisplayName("Debe configurar la ruta POST /api/v1/usuarios")
     void debeConfigurarLaRutaPOSTUsuarios() {
         // Act
-        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(handler);
+        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler);
 
         // Assert
         assertNotNull(routerFunction);

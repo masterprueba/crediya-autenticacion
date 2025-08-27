@@ -30,7 +30,7 @@ import org.springframework.web.reactive.function.server.HandlerStrategies;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests unitarios para Handler")
-class HandlerTest {
+class UsuarioHandlerTest {
 
     @Mock
     private RegistrarUsuarioUseCase registrarUsuarioUseCase;
@@ -38,19 +38,19 @@ class HandlerTest {
     @Mock
     private ConsultarUsuarioUseCase consultarUsuarioUseCase;
 
-    private Handler handler;
+    private UsuarioHandler usuarioHandler;
 
     @BeforeEach
     void setUp() {
         UsuarioMapper usuarioMapper = Mappers.getMapper(UsuarioMapper.class);
-        handler = new Handler(registrarUsuarioUseCase, consultarUsuarioUseCase, usuarioMapper);
+        usuarioHandler = new UsuarioHandler(registrarUsuarioUseCase, consultarUsuarioUseCase, usuarioMapper);
     }
 
     @Test
     @DisplayName("Debe crear Handler con use case")
     void debeCrearHandlerConUseCase() {
         // Assert
-        assertNotNull(handler);
+        assertNotNull(usuarioHandler);
     }
 
     @Test
@@ -176,9 +176,9 @@ class HandlerTest {
     }
 
     private Usuario invocarToDomain(RegistrarUsuarioRequest request) throws Exception {
-        Method method = Handler.class.getDeclaredMethod("toDomain", RegistrarUsuarioRequest.class);
+        Method method = UsuarioHandler.class.getDeclaredMethod("toDomain", RegistrarUsuarioRequest.class);
         method.setAccessible(true);
-        return (Usuario) method.invoke(handler, request);
+        return (Usuario) method.invoke(usuarioHandler, request);
     }
 
     @Test
@@ -197,7 +197,7 @@ class HandlerTest {
         ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
 
         // Act
-        Mono<ServerResponse> responseMono = handler.consultarPorEmail(serverRequest);
+        Mono<ServerResponse> responseMono = usuarioHandler.consultarPorEmail(serverRequest);
 
         // Assert: escribir respuesta al exchange y verificar
         ServerResponse response = responseMono.block();
@@ -225,7 +225,7 @@ class HandlerTest {
         MockServerWebExchange exchange = MockServerWebExchange.from(httpRequest);
         ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
 
-        assertThrows(IllegalArgumentException.class, () -> handler.consultarPorEmail(serverRequest));
+        assertThrows(IllegalArgumentException.class, () -> usuarioHandler.consultarPorEmail(serverRequest));
     }
 
     @Test
@@ -257,7 +257,7 @@ class HandlerTest {
         ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
 
         // Act
-        Mono<ServerResponse> responseMono = handler.registrar(serverRequest);
+        Mono<ServerResponse> responseMono = usuarioHandler.registrar(serverRequest);
 
         // Assert
         ServerResponse response = responseMono.block();

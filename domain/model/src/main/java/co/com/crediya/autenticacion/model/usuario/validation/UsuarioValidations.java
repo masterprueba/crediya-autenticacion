@@ -1,6 +1,6 @@
 package co.com.crediya.autenticacion.model.usuario.validation;
 
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
