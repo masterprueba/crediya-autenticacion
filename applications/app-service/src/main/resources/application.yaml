@@ -31,3 +31,6 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+app:
+  secret:
+    key: "JOrsh3r3yS3cr3tK3y"

@@ -48,11 +48,12 @@ class UsuarioEntityTest {
         Long idRol = 2L;
         BigDecimal salario = new BigDecimal("2500000");
         Instant creado = Instant.now();
+        String password = "hashedPassword";
 
         // Act
         UsuarioEntity entity = new UsuarioEntity(
                 id, nombres, apellidos, telefono, fechaNacimiento,
-                direccion, email, documentoIdentidad, idRol, salario, creado
+                direccion, email, documentoIdentidad, idRol, salario, creado, password
         );
 
         // Assert
@@ -121,20 +122,21 @@ class UsuarioEntityTest {
         LocalDate fechaNacimiento = LocalDate.of(1990, 5, 15);
         BigDecimal salario = new BigDecimal("2500000");
         Instant creado = Instant.now();
+        String password = "hashedPassword";
 
         UsuarioEntity entity1 = new UsuarioEntity(
                 1L, "Juan", "Pérez", "+573001234567", fechaNacimiento,
-                "Calle 123", "juan@example.com", "1234567890", 2L, salario, creado
+                "Calle 123", "juan@example.com", "1234567890", 2L, salario, creado, password
         );
 
         UsuarioEntity entity2 = new UsuarioEntity(
                 1L, "Juan", "Pérez", "+573001234567", fechaNacimiento,
-                "Calle 123", "juan@example.com", "1234567890", 2L, salario, creado
+                "Calle 123", "juan@example.com", "1234567890", 2L, salario, creado, password
         );
 
         UsuarioEntity entity3 = new UsuarioEntity(
                 2L, "Juan", "Pérez", "+573001234567", fechaNacimiento,
-                "Calle 123", "juan@example.com", "1234567890", 2L, salario, creado
+                "Calle 123", "juan@example.com", "1234567890", 2L, salario, creado, password
         );
 
         // Assert
@@ -150,7 +152,7 @@ class UsuarioEntityTest {
         // Arrange
         UsuarioEntity entity = new UsuarioEntity(
                 1L, "Ana", "Martínez", "+573001234567", LocalDate.of(1990, 5, 15),
-                "Calle 456", "ana@example.com", "9876543210", 1L, new BigDecimal("3000000"), Instant.now()
+                "Calle 456", "ana@example.com", "9876543210", 1L, new BigDecimal("3000000"), Instant.now(), "hashedPassword"
         );
 
         // Act
@@ -170,7 +172,7 @@ class UsuarioEntityTest {
         // Act
         UsuarioEntity entity = new UsuarioEntity(
                 null, null, null, null, null,
-                null, null, null, null, null, null
+                null, null, null, null, null, null, null
         );
 
         // Assert

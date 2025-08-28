@@ -30,8 +30,9 @@ public class RouterRest {
                     beanMethod = "consultarPorEmail"
             )
     })
-    public RouterFunction<ServerResponse> routerFunction(UsuarioHandler usuarioHandler) {
+    public RouterFunction<ServerResponse> routerFunction(UsuarioHandler usuarioHandler, LoginHandler loginHandler) {
         return RouterFunctions.route(POST("/usuarios"), usuarioHandler::registrar)
-                .andRoute(GET("/usuarios/cliente"), usuarioHandler::consultarPorEmail);
+                .andRoute(GET("/usuarios/cliente"), usuarioHandler::consultarPorEmail)
+                .andRoute(POST("/login"), loginHandler::login);
     }
 }

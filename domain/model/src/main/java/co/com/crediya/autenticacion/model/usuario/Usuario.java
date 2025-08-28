@@ -22,4 +22,5 @@ public class Usuario {
     private Long idRol;
     private BigDecimal salario;
     private Instant creado;
+    private String password;
 }

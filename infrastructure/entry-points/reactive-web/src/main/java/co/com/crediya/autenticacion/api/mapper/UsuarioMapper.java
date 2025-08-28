@@ -15,6 +15,7 @@ public interface UsuarioMapper {
     @Mapping(source = "rol",target = "idRol")
     @Mapping(source = "salario_base",target = "salario")
     @Mapping(source = "correo_electronico",target = "email")
+    @Mapping(target = "password",ignore = true)
     Usuario toDomain(RegistrarUsuarioRequest r);
 
     @Mapping(target = "nombreCompleto", expression = "java(usuario.getNombres() + \" \" + usuario.getApellidos())")

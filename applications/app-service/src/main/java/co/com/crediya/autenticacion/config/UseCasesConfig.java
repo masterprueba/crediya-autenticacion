@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.config;
 
 import co.com.crediya.autenticacion.model.login.gateways.LoginRepository;
+import co.com.crediya.autenticacion.model.login.gateways.PasswordEncoderPort;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.login.LoginUseCase;
@@ -29,7 +30,7 @@ public class UseCasesConfig {
     }
 
     @Bean
-    public LoginUseCase loginUseCase(LoginRepository loginRepository, UsuarioRepository usuarioRepository){
-        return new LoginUseCase(loginRepository, usuarioRepository);
+    public LoginUseCase loginUseCase(LoginRepository loginRepository, UsuarioRepository usuarioRepository, PasswordEncoderPort passwordEncoderPort) {
+        return new LoginUseCase(loginRepository, usuarioRepository, passwordEncoderPort);
     }
 }

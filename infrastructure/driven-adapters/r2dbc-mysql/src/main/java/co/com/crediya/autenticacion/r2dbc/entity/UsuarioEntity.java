@@ -35,6 +35,6 @@ public class UsuarioEntity {
     @Column("salario_base")
     private BigDecimal salario;
     private Instant creado;
-
+    private String password;
    
 }

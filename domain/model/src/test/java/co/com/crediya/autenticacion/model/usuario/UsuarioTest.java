@@ -91,7 +91,7 @@ class UsuarioTest {
                 "9876543210",
                 1L,
                 salario,
-                ahora
+                ahora,"as"
         );
 
         // Assert
