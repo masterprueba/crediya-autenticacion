@@ -38,7 +38,11 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(ex -> ex
                         .pathMatchers(HttpMethod.POST, "/login").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/auth/validate").permitAll() // Endpoint público para validación entre microservicios
                         .pathMatchers("/actuator/**").permitAll()
+                        .pathMatchers("/webjars/swagger-ui/**").permitAll()
+                        .pathMatchers("/swagger-ui.html").permitAll()
+                        .pathMatchers("/v3/api-docs/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/usuarios")
                         .hasAnyRole("ADMIN","ASESOR")
                         .pathMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("CLIENTE")

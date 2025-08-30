@@ -6,6 +6,7 @@ import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.login.LoginUseCase;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
+import co.com.crediya.autenticacion.usecase.validatetoken.ValidateTokenUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -32,5 +33,10 @@ public class UseCasesConfig {
     @Bean
     public LoginUseCase loginUseCase(LoginRepository loginRepository, UsuarioRepository usuarioRepository, PasswordEncoderPort passwordEncoderPort) {
         return new LoginUseCase(loginRepository, usuarioRepository, passwordEncoderPort);
+    }
+
+    @Bean
+    public ValidateTokenUseCase validateTokenUseCase(LoginRepository loginRepository) {
+        return new ValidateTokenUseCase(loginRepository);
     }
 }

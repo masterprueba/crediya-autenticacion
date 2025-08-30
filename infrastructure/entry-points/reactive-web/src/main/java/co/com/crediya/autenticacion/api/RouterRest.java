@@ -28,11 +28,18 @@ public class RouterRest {
                     method = RequestMethod.GET,
                     beanClass = UsuarioHandler.class,
                     beanMethod = "consultarPorEmail"
+            ),
+            @RouterOperation(
+                    path = "/auth/validate",
+                    method = RequestMethod.POST,
+                    beanClass = TokenValidationHandler.class,
+                    beanMethod = "validateToken"
             )
     })
-    public RouterFunction<ServerResponse> routerFunction(UsuarioHandler usuarioHandler, LoginHandler loginHandler) {
+    public RouterFunction<ServerResponse> routerFunction(UsuarioHandler usuarioHandler, LoginHandler loginHandler, TokenValidationHandler tokenValidationHandler) {
         return RouterFunctions.route(POST("/usuarios"), usuarioHandler::registrar)
                 .andRoute(GET("/usuarios/cliente"), usuarioHandler::consultarPorEmail)
-                .andRoute(POST("/login"), loginHandler::login);
+                .andRoute(POST("/login"), loginHandler::login)
+                .andRoute(POST("/auth/validate"), tokenValidationHandler::validateToken);
     }
 }
