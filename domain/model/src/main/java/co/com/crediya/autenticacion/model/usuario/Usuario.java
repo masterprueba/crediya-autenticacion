@@ -20,6 +20,7 @@ public class Usuario {
     private String direccion;
     private String documentoIdentidad;
     private Long idRol;
+    private  String nombreRol;
     private BigDecimal salario;
     private Instant creado;
     private String password;

@@ -32,7 +32,7 @@ public class LoginUseCase {
                   .flatMap(userValido-> loginPort.generate(
                           userValido.getId().toString(),
                           userValido.getEmail(),
-                          userValido.getIdRol().toString(),
+                          userValido.getNombreRol(),
                           Map.of("Nombre", userValido.getNombres() + " " + userValido.getApellidos()),
                           Instant.now().plus(Duration.ofHours(8))
                   ));

@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 public class RegistrarUsuarioUseCase {
     private final UsuarioRepository repo;
 
+
     public Mono<Usuario> ejecutar(Usuario u) {
         return UsuarioValidations.completa()
                 .validate(u)

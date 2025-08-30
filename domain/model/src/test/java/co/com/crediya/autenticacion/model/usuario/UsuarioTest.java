@@ -90,6 +90,7 @@ class UsuarioTest {
                 "Carrera 15 #45-67, Medellín",
                 "9876543210",
                 1L,
+                "CLIENTE",
                 salario,
                 ahora,"as"
         );

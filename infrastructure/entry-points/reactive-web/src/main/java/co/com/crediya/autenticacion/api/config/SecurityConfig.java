@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -13,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
+import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import reactor.core.publisher.Mono;
 
 @Configuration
@@ -36,11 +39,12 @@ public class SecurityConfig {
                 .authorizeExchange(ex -> ex
                         .pathMatchers(HttpMethod.POST, "/login").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
-                        // ejemplo: solo ADMIN/ASESOR registran usuarios
-                        .pathMatchers(HttpMethod.POST, "/api/v1/usuarios")
+                        .pathMatchers(HttpMethod.POST, "/usuarios")
                         .hasAnyRole("ADMIN","ASESOR")
+                        .pathMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("CLIENTE")
                         .anyExchange().authenticated()
                 )
+                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler()))
                 .addFilterAt(jwtWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
 
@@ -51,7 +55,7 @@ public class SecurityConfig {
         return authentication -> {
             var token = (String) authentication.getCredentials();
             LoginRepository.JwtPayload payload = jwt.verify(token); // DomainException si inválido
-            var auths = java.util.List.of(new SimpleGrantedAuthority("ROLE_" + payload.rol()));
+            var auths = java.util.List.of(new SimpleGrantedAuthority("ROLE_"+payload.rol()));
             return Mono.just(new UsernamePasswordAuthenticationToken(payload, token, auths));
         };
     }
@@ -62,6 +66,19 @@ public class SecurityConfig {
                 .filter(h -> h.startsWith("Bearer "))
                 .map(h -> h.substring(7))
                 .map(t -> new UsernamePasswordAuthenticationToken(null, t));
+    }
+
+
+    @Bean
+    public ServerAccessDeniedHandler customAccessDeniedHandler() {
+        return (exchange, denied) -> {
+            var response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.FORBIDDEN);
+            response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+            var dataBuffer = response.bufferFactory()
+                    .wrap("{\"mensaje\":\"Acceso denegado: no tienes permisos suficientes.\"}".getBytes());
+            return response.writeWith(Mono.just(dataBuffer));
+        };
     }
 }
 
