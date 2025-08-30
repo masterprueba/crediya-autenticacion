@@ -30,7 +30,13 @@ public class RouterRest {
                     beanMethod = "consultarPorEmail"
             ),
             @RouterOperation(
-                    path = "/auth/validate",
+                    path = "/login",
+                    method = RequestMethod.POST,
+                    beanClass = LoginHandler.class,
+                    beanMethod = "login"
+            ),
+            @RouterOperation(
+                    path = "/usuarios/auth/validate",
                     method = RequestMethod.POST,
                     beanClass = TokenValidationHandler.class,
                     beanMethod = "validateToken"
@@ -40,6 +46,6 @@ public class RouterRest {
         return RouterFunctions.route(POST("/usuarios"), usuarioHandler::registrar)
                 .andRoute(GET("/usuarios/cliente"), usuarioHandler::consultarPorEmail)
                 .andRoute(POST("/login"), loginHandler::login)
-                .andRoute(POST("/auth/validate"), tokenValidationHandler::validateToken);
+                .andRoute(POST("/usuarios/auth/validate"), tokenValidationHandler::validateToken);
     }
 }

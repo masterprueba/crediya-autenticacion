@@ -26,15 +26,15 @@ public class LoginUseCase {
     public Mono<String> login(String email, String rawPassword){
             log.info("Inicio proceso de autenticacion para el usuario con email: {}", email);
           return usuarioPort.findByEmail(email)
-                .switchIfEmpty(Mono.error(new DomainException("Credenciales invalidas ")))
+                .switchIfEmpty(Mono.error(new DomainException("Credenciales invalidas.")))
                   .filter(user -> passwordEncoderPort.matches(rawPassword, user.getPassword()))
-                  .switchIfEmpty(Mono.error(new DomainException("Credenciales invalidas")))
+                  .switchIfEmpty(Mono.error(new DomainException("Credenciales invalidas.")))
                   .flatMap(userValido-> loginPort.generate(
                           userValido.getId().toString(),
                           userValido.getEmail(),
                           userValido.getNombreRol(),
                           Map.of("Nombre", userValido.getNombres() + " " + userValido.getApellidos()),
-                          Instant.now().plus(Duration.ofHours(8))
+                          Instant.now().plus(Duration.ofMinutes(1))
                   ));
     }
 }

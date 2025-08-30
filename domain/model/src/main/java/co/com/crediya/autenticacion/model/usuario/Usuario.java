@@ -6,9 +6,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Data
 @Builder(toBuilder = true)
 public class Usuario {
     private Long id;

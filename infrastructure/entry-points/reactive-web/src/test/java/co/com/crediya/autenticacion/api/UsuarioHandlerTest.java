@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
@@ -29,8 +31,11 @@ import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.web.reactive.function.server.HandlerStrategies;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Tests unitarios para Handler")
+@DisplayName("Tests unitarios para UsuarioHandler")
 class UsuarioHandlerTest {
+
+    @Autowired
+    private WebTestClient webTestClient;
 
     @Mock
     private RegistrarUsuarioUseCase registrarUsuarioUseCase;
@@ -49,14 +54,12 @@ class UsuarioHandlerTest {
     @Test
     @DisplayName("Debe crear Handler con use case")
     void debeCrearHandlerConUseCase() {
-        // Assert
         assertNotNull(usuarioHandler);
     }
 
     @Test
     @DisplayName("Debe mapear DTO a Usuario correctamente")
     void debeMapearDTOAUsuarioCorrectamente() throws Exception {
-        // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Juan Carlos",
                 "Pérez García",
@@ -90,15 +93,12 @@ class UsuarioHandlerTest {
     @Test
     @DisplayName("Debe mapear DTO con campos nulos")
     void debeMapearDTOConCamposNulos() throws Exception {
-        // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 null, null, null, null, null, null, null, null, null
         );
 
-        // Act
         Usuario usuarioMapeado = invocarToDomain(request);
 
-        // Assert
         assertNotNull(usuarioMapeado);
         assertNull(usuarioMapeado.getId());
         assertNull(usuarioMapeado.getNombres());
@@ -116,31 +116,25 @@ class UsuarioHandlerTest {
     @Test
     @DisplayName("Debe asignar rol por defecto como 2L")
     void debeAsignarRolPorDefectoComo2L() throws Exception {
-        // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Ana", "García", "+573001234567", LocalDate.of(1990, 1, 1),
                 "Calle 123", "ana@example.com", "1234567890", 1L, new BigDecimal("1000000")
         );
 
-        // Act
         Usuario usuarioMapeado = invocarToDomain(request);
 
-        // Assert
         assertEquals(2L, usuarioMapeado.getIdRol()); // Siempre asigna 2L independientemente del input
     }
 
     @Test
     @DisplayName("Debe asignar timestamp de creación automáticamente")
     void debeAsignarTimestampDeCreacionAutomaticamente() throws Exception {
-        // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Pedro", "Silva", null, null, null, "pedro@example.com", null, null, new BigDecimal("1500000")
         );
 
-        // Act
         Usuario usuarioMapeado = invocarToDomain(request);
 
-        // Assert
         assertNotNull(usuarioMapeado.getCreado());
         assertTrue(usuarioMapeado.getCreado().toEpochMilli() > 0);
     }
@@ -148,7 +142,6 @@ class UsuarioHandlerTest {
     @Test
     @DisplayName("Debe manejar diferentes tipos de datos correctamente")
     void debeManejarDiferentesTiposDeDatosCorrectamente() throws Exception {
-        // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "María Elena",
                 "González López",
@@ -161,10 +154,8 @@ class UsuarioHandlerTest {
                 new BigDecimal("5000000.50")
         );
 
-        // Act
         Usuario usuarioMapeado = invocarToDomain(request);
 
-        // Assert
         assertEquals("María Elena", usuarioMapeado.getNombres());
         assertEquals("González López", usuarioMapeado.getApellidos());
         assertEquals("+573109876543", usuarioMapeado.getTelefono());
@@ -184,7 +175,6 @@ class UsuarioHandlerTest {
     @Test
     @DisplayName("consultarPorEmail debe responder 200 y body UsuarioResponse")
     void consultarPorEmailDebeResponderOk() {
-        // Arrange
         Usuario usuario = Usuario.builder()
                 .nombres("Juan").apellidos("Pérez").email("juan@example.com").documentoIdentidad("123")
                 .build();
@@ -196,10 +186,8 @@ class UsuarioHandlerTest {
         MockServerWebExchange exchange = MockServerWebExchange.from(httpRequest);
         ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
 
-        // Act
         Mono<ServerResponse> responseMono = usuarioHandler.consultarPorEmail(serverRequest);
 
-        // Assert: escribir respuesta al exchange y verificar
         ServerResponse response = responseMono.block();
         assertNotNull(response);
         response.writeTo(exchange, new ServerResponse.Context() {

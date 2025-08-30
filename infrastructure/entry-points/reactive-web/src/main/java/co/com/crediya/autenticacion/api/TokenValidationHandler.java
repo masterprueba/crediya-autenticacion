@@ -57,7 +57,7 @@ public class TokenValidationHandler {
                       "status": 401,
                       "codigo": "TOKEN_INVALIDO",
                       "mensaje": "El token proporcionado es inválido o ha expirado",
-                      "ruta": "/api/v1/auth/validate"
+                      "ruta": "/api/v1/usuarios/auth/validate"
                     }
                     """)
             )
