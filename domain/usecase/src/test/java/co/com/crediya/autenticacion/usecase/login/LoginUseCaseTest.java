@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests para LoginUseCase")
-public class LoginUseCaseTest {
+class LoginUseCaseTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;

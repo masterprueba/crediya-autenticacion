@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests para la validación de la entidad Usuario")
-public class UsuarioValidationTest {
+class UsuarioValidationTest {
 
 
     @Test
@@ -27,13 +27,10 @@ public class UsuarioValidationTest {
         Usuario usuarioConNombresVacios = Usuario.builder()
                 .nombres("   ")
                 .build();
-
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.nombresRequeridos().validate(usuarioConNombresNulos).block();
-        });
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.nombresRequeridos().validate(usuarioConNombresVacios).block();
-        });
+        var result = UsuarioValidations.nombresRequeridos().validate(usuarioConNombresNulos);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.nombresRequeridos().validate(usuarioConNombresVacios);
+        assertThrows(DomainException.class, result2::block);
     }
 
     @Test
@@ -46,13 +43,10 @@ public class UsuarioValidationTest {
         Usuario usuarioConApellidosVacios = Usuario.builder()
                 .apellidos("   ")
                 .build();
-
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.apellidosRequeridos().validate(usuarioConApellidosNulos).block();
-        });
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.apellidosRequeridos().validate(usuarioConApellidosVacios).block();
-        });
+        var result = UsuarioValidations.apellidosRequeridos().validate(usuarioConApellidosNulos);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.apellidosRequeridos().validate(usuarioConApellidosVacios);
+        assertThrows(DomainException.class, result2::block);
     }
 
     @Test
@@ -65,12 +59,10 @@ public class UsuarioValidationTest {
                 .email("   ")
                 .build();
 
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.emailRequerido().validate(usuarioConEmailNulo).block();
-        });
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.emailRequerido().validate(usuarioConEmailVacio).block();
-        });
+        var result = UsuarioValidations.emailRequerido().validate(usuarioConEmailNulo);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.emailRequerido().validate(usuarioConEmailVacio);
+        assertThrows(DomainException.class, result2::block);
     }
 
     @Test
@@ -79,9 +71,10 @@ public class UsuarioValidationTest {
         Usuario usuarioConEmailInvalido = Usuario.builder()
                 .email("email-invalido")
                 .build();
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.formatoEmailValido().validate(usuarioConEmailInvalido).block();
-        });
+
+        var result = UsuarioValidations.formatoEmailValido().validate(usuarioConEmailInvalido);
+        assertThrows(DomainException.class, result::block);
+
     }
 
     @Test
@@ -93,12 +86,10 @@ public class UsuarioValidationTest {
         Usuario usuarioConSalarioExcesivo = Usuario.builder()
                 .salario(new BigDecimal(20000000))
                 .build();
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.salarioEnRango().validate(usuarioConSalarioNegativo).block();
-        });
-        assertThrows(DomainException.class, () -> {
-            UsuarioValidations.salarioEnRango().validate(usuarioConSalarioExcesivo).block();
-        });
+        var result = UsuarioValidations.salarioEnRango().validate(usuarioConSalarioNegativo);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.salarioEnRango().validate(usuarioConSalarioExcesivo);
+        assertThrows(DomainException.class, result2::block);
     }
 
     @Test

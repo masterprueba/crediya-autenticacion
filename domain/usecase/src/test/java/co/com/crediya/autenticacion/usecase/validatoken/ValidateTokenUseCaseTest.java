@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests para ValidateTokenUseCase")
-public class ValidateTokenUseCaseTest {
+class ValidateTokenUseCaseTest {
 
     @Mock
     private LoginRepository loginRepository;

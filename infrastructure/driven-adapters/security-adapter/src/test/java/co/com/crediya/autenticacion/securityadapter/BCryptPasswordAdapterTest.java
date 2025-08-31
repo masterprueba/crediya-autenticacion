@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests para BCryptPasswordAdapter")
-public class BCryptPasswordAdapterTest {
+class BCryptPasswordAdapterTest {
 
     @Mock
     private PasswordEncoderPort passwordEncoderPort;
