@@ -18,6 +18,12 @@ class RouterRestTest {
     @Mock
     private UsuarioHandler usuarioHandler;
 
+    @Mock
+    private LoginHandler loginHandler;
+
+    @Mock
+    private TokenValidationHandler tokenValidationHandler;
+
     private RouterRest routerRest;
 
     @BeforeEach
@@ -29,7 +35,7 @@ class RouterRestTest {
     @DisplayName("Debe crear RouterFunction correctamente")
     void debeCrearRouterFunctionCorrectamente() {
         // Act
-        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler);
+        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler, loginHandler, tokenValidationHandler);
 
         // Assert
         assertNotNull(routerFunction);
@@ -39,11 +45,23 @@ class RouterRestTest {
     @DisplayName("Debe configurar la ruta POST /api/v1/usuarios")
     void debeConfigurarLaRutaPOSTUsuarios() {
         // Act
-        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler);
+        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler, loginHandler, tokenValidationHandler);
 
         // Assert
         assertNotNull(routerFunction);
         // Verificamos que el RouterFunction fue creado (la configuración de rutas es interna de Spring)
         assertTrue(routerFunction.toString().contains("POST"));
+    }
+
+    @Test
+    @DisplayName("Debe configurar la ruta GET /api/v1/usuarios/cliente")
+    void debeConfigurarLaRutaGETUsuariosCliente() {
+        // Act
+        RouterFunction<ServerResponse> routerFunction = routerRest.routerFunction(usuarioHandler, loginHandler, tokenValidationHandler);
+
+        // Assert
+        assertNotNull(routerFunction);
+        // Verificamos que el RouterFunction fue creado (la configuración de rutas es interna de Spring)
+        assertTrue(routerFunction.toString().contains("GET"));
     }
 }

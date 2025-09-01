@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class MyReactiveRepositoryAdapterTest {
 
     @Mock
-    private MyReactiveRepository repository;
+    private UsuarioMysqlRepository repository;
 
     @Mock
     private ObjectMapper mapper;
@@ -33,11 +33,14 @@ class MyReactiveRepositoryAdapterTest {
     @Mock
     private TransactionalOperator transactionalOperator;
 
-    private MyReactiveRepositoryAdapter adapter;
+    @Mock
+    private RoleMysqlRepository roleRepository;
+
+    private UsuarioMysqlRepositoryAdapter adapter;
 
     @BeforeEach
     void setUp() {
-        adapter = new MyReactiveRepositoryAdapter(repository, mapper, transactionalOperator);
+        adapter = new UsuarioMysqlRepositoryAdapter(repository, mapper, transactionalOperator, roleRepository);
     }
 
     @Test
@@ -85,11 +88,21 @@ class MyReactiveRepositoryAdapterTest {
         UsuarioEntity entity = new UsuarioEntity();
         entity.setId(7L);
         entity.setEmail("x@y.com");
+        entity.setIdRol(2L); // Asegúrate de usar setIdRol
+
+        // El Usuario mapeado debe tener el idRol
+        Usuario usuarioMapeado = Usuario.builder()
+                .id(7L)
+                .email("x@y.com")
+                .idRol(2L)
+                .build();
+
         when(repository.findByEmail("x@y.com")).thenReturn(Mono.just(entity));
-        when(mapper.map(entity, Usuario.class)).thenReturn(Usuario.builder().id(7L).email("x@y.com").build());
+        when(mapper.map(entity, Usuario.class)).thenReturn(usuarioMapeado);
+        when(roleRepository.findById(2L)).thenReturn(Mono.empty());
 
         StepVerifier.create(adapter.findByEmail("x@y.com"))
-                .expectNextMatches(u -> u.getId() == 7L && u.getEmail().equals("x@y.com"))
+                .expectNextMatches(u -> u.getId() == 7L && u.getEmail().equals("x@y.com") && u.getNombreRol().equals("CLIENTE"))
                 .verifyComplete();
     }
 
