@@ -22,7 +22,7 @@ class LoginSecurityRepositoryAdapterTest {
 
     @Test
     void testGenerateToken() {
-        String secret = "dGhpc2lzYXNlY3JldGtleWZvcnRlc3Rpbmc"; // Base64URL de "thisisasecretkeyfortesting"
+        String secret = "dGhpc0lzQVNlY3VyZVNlY3JldEtleUZvclRlc3RpbmdBMTIzNA=="; // Base64URL de "thisisasecretkeyfortesting"
         LoginSecurityRepositoryAdapter adapter = new LoginSecurityRepositoryAdapter(secret);
         String sub = "123";
         String email = "test@crediya.com";
@@ -41,7 +41,7 @@ class LoginSecurityRepositoryAdapterTest {
     
     @Test
     void testGenerateAndVerifyToken() {
-        String secret = "dGhpc2lzYXNlY3JldGtleWZvcnRlc3Rpbmc"; // Base64URL de
+        String secret = "dGhpc0lzQVNlY3VyZVNlY3JldEtleUZvclRlc3RpbmdBMTIzNA=="; // Base64URL de
         LoginSecurityRepositoryAdapter adapter = new LoginSecurityRepositoryAdapter(secret);
         String sub = "123";
         String email = "test@test.com";

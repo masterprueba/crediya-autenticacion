@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Usuario {

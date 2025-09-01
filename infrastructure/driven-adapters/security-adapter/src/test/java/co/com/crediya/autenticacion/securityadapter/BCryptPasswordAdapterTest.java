@@ -29,7 +29,7 @@ class BCryptPasswordAdapterTest {
     @DisplayName("Debe verificar la contraseña correctamente")
     void debeVerificarLaContrasenaCorrectamente() {
         String rawPassword = "password123";
-        String hashedPassword = "$2a$10$Dow1j8eG5F"; // Ejemplo de hash bcrypt
+        String hashedPassword = "dGhpc0lzQVNlY3VyZVNlY3JldEtleUZvclRlc3RpbmdBMTIzNA=="; // Ejemplo de hash bcrypt
         when(passwordEncoderPort.matches(rawPassword, hashedPassword)).thenReturn(true);
 
         assertTrue(passwordEncoderPort.matches(rawPassword, hashedPassword));
@@ -38,7 +38,7 @@ class BCryptPasswordAdapterTest {
     @Test
     @DisplayName("Debe fallar al verificar la contraseña incorrecta")
     void debeFallarAlVerificarLaContrasenaIncorrecta() {
-        String hashedPassword = "$2a$10$Dow1j8eG5F"; // Ejemplo de hash bcrypt
+        String hashedPassword = "dGhpc0lzQVNlY3VyZVNlY3JldEtleUZvclRlc3RpbmdBMTIzNA=="; // Ejemplo de hash bcrypt
         when(passwordEncoderPort.matches("wrongPassword", hashedPassword)).thenReturn(false);
 
         assertFalse(passwordEncoderPort.matches("wrongPassword", hashedPassword));
@@ -49,7 +49,7 @@ class BCryptPasswordAdapterTest {
     @DisplayName("Debe manejar null al verificar la contraseña")
     void debeManejarNullAlVerificarLaContrasena() {
         // Arrange
-        String hashedPassword = "$2a$10$Dow1j8eG5F"; // Ejemplo de hash bcrypt
+        String hashedPassword = "dGhpc0lzQVNlY3VyZVNlY3JldEtleUZvclRlc3RpbmdBMTIzNA=="; // Ejemplo de hash bcrypt
         when(passwordEncoderPort.matches(null, hashedPassword)).thenReturn(false);
 
         assertFalse(passwordEncoderPort.matches(null, hashedPassword));
