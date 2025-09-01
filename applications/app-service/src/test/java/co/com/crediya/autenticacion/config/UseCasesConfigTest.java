@@ -1,21 +1,24 @@
 package co.com.crediya.autenticacion.config;
 
-import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SpringBootTest
+@ComponentScan(basePackages = {"co.com.crediya.autenticacion.usecase", "co.com.crediya.autenticacion.securityadapter"})
 class UseCasesConfigTest {
+
+    @Autowired
+    private ApplicationContext context;
 
     @Test
     void testUseCaseBeansExist() {
-        new ApplicationContextRunner()
-                .withUserConfiguration(UseCasesConfig.class)
-                .withBean(UsuarioRepository.class, () -> Mockito.mock(UsuarioRepository.class))
-                .run(context -> {
-                    assertThat(context).hasBean("registrarUsuarioUseCase");
-                });
+        assertNotNull(context.getBean("registrarUsuarioUseCase"));
+        assertNotNull(context.getBean("consultarUsuarioUseCase"));
+        assertNotNull(context.getBean("loginUseCase"));
     }
 }

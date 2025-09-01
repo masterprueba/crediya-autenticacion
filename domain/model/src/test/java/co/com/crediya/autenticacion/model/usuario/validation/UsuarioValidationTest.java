@@ -1,0 +1,106 @@
+package co.com.crediya.autenticacion.model.usuario.validation;
+
+
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.usuario.Usuario;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("Tests para la validación de la entidad Usuario")
+class UsuarioValidationTest {
+
+
+    @Test
+    @DisplayName("Debe lanzar DomainException si los nombres son nulos o vacíos")
+    void debeLanzarDomainExceptionSiNombresNulosOVacios() {
+
+        Usuario usuarioConNombresNulos = Usuario.builder()
+                .nombres(null)
+                .build();
+        Usuario usuarioConNombresVacios = Usuario.builder()
+                .nombres("   ")
+                .build();
+        var result = UsuarioValidations.nombresRequeridos().validate(usuarioConNombresNulos);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.nombresRequeridos().validate(usuarioConNombresVacios);
+        assertThrows(DomainException.class, result2::block);
+    }
+
+    @Test
+    @DisplayName("Debe lanzar DomainException si los apellidos son nulos o vacíos")
+    void debeLanzarDomainExceptionSiApellidosNulosOVacios() {
+
+        Usuario usuarioConApellidosNulos = Usuario.builder()
+                .apellidos(null)
+                .build();
+        Usuario usuarioConApellidosVacios = Usuario.builder()
+                .apellidos("   ")
+                .build();
+        var result = UsuarioValidations.apellidosRequeridos().validate(usuarioConApellidosNulos);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.apellidosRequeridos().validate(usuarioConApellidosVacios);
+        assertThrows(DomainException.class, result2::block);
+    }
+
+    @Test
+    @DisplayName("Debe lanzar DomainException si el email es nulo o vacío")
+    void debeLanzarDomainExceptionSiEmailNuloOVacio() {
+        Usuario usuarioConEmailNulo = Usuario.builder()
+                .email(null)
+                .build();
+        Usuario usuarioConEmailVacio = Usuario.builder()
+                .email("   ")
+                .build();
+
+        var result = UsuarioValidations.emailRequerido().validate(usuarioConEmailNulo);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.emailRequerido().validate(usuarioConEmailVacio);
+        assertThrows(DomainException.class, result2::block);
+    }
+
+    @Test
+    @DisplayName("Debe lanzar DomainException si el formato del email es inválido")
+    void debeLanzarDomainExceptionSiFormatoEmailInvalido() {
+        Usuario usuarioConEmailInvalido = Usuario.builder()
+                .email("email-invalido")
+                .build();
+
+        var result = UsuarioValidations.formatoEmailValido().validate(usuarioConEmailInvalido);
+        assertThrows(DomainException.class, result::block);
+
+    }
+
+    @Test
+    @DisplayName("Debe lanzar DomainException si el salario está fuera del rango permitido")
+    void debeLanzarDomainExceptionSiSalarioFueraDeRango() {
+        Usuario usuarioConSalarioNegativo = Usuario.builder()
+                .salario(new BigDecimal(-1000))
+                .build();
+        Usuario usuarioConSalarioExcesivo = Usuario.builder()
+                .salario(new BigDecimal(20000000))
+                .build();
+        var result = UsuarioValidations.salarioEnRango().validate(usuarioConSalarioNegativo);
+        assertThrows(DomainException.class, result::block);
+        var result2 = UsuarioValidations.salarioEnRango().validate(usuarioConSalarioExcesivo);
+        assertThrows(DomainException.class, result2::block);
+    }
+
+    @Test
+    @DisplayName("Debe validar correctamente un usuario válido")
+    void debeValidarCorrectamenteUsuarioValido() {
+        Usuario usuarioValido = Usuario.builder()
+                .nombres("Juan")
+                .apellidos("Pérez")
+                .email("juan.perez@email.com")
+                .salario(BigDecimal.TEN)
+                .build();
+        UsuarioValidations.completa().validate(usuarioValido).block();
+    }
+}

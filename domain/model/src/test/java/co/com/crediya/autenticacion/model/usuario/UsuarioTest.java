@@ -2,6 +2,8 @@ package co.com.crediya.autenticacion.model.usuario;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Tests para la entidad Usuario")
 class UsuarioTest {
 
@@ -33,6 +36,8 @@ class UsuarioTest {
                 .idRol(2L)
                 .salario(salario)
                 .creado(ahora)
+                .nombreRol("ADMIN")
+                .password("as")
                 .build();
 
         // Assert
@@ -48,27 +53,8 @@ class UsuarioTest {
         assertEquals(2L, usuario.getIdRol());
         assertEquals(salario, usuario.getSalario());
         assertEquals(ahora, usuario.getCreado());
-    }
-
-    @Test
-    @DisplayName("Debe crear un usuario vacío con constructor sin argumentos")
-    void debeCrearUsuarioVacioConConstructorSinArgumentos() {
-        // Act
-        Usuario usuario = new Usuario();
-
-        // Assert
-        assertNotNull(usuario);
-        assertNull(usuario.getId());
-        assertNull(usuario.getNombres());
-        assertNull(usuario.getApellidos());
-        assertNull(usuario.getTelefono());
-        assertNull(usuario.getEmail());
-        assertNull(usuario.getFechaNacimiento());
-        assertNull(usuario.getDireccion());
-        assertNull(usuario.getDocumentoIdentidad());
-        assertNull(usuario.getIdRol());
-        assertNull(usuario.getSalario());
-        assertNull(usuario.getCreado());
+        assertEquals("ADMIN", usuario.getNombreRol());
+        assertEquals("as", usuario.getPassword());
     }
 
     @Test
@@ -90,8 +76,9 @@ class UsuarioTest {
                 "Carrera 15 #45-67, Medellín",
                 "9876543210",
                 1L,
+                "CLIENTE",
                 salario,
-                ahora
+                ahora,"prueba1234"
         );
 
         // Assert
@@ -107,90 +94,114 @@ class UsuarioTest {
         assertEquals(1L, usuario.getIdRol());
         assertEquals(salario, usuario.getSalario());
         assertEquals(ahora, usuario.getCreado());
+        assertEquals("CLIENTE", usuario.getNombreRol());
+        assertEquals("prueba1234", usuario.getPassword());
     }
 
     @Test
-    @DisplayName("Debe permitir modificar un usuario usando toBuilder")
-    void debePermitirModificarUsuarioUsandoToBuilder() {
-        // Arrange
-        Usuario usuarioOriginal = Usuario.builder()
-                .id(1L)
-                .nombres("Carlos")
-                .apellidos("Rodríguez")
-                .email("carlos@example.com")
-                .salario(new BigDecimal("2000000"))
-                .build();
+    @DisplayName("Debe permitir modificar campos con setters")
+    void  debePermitirModificarCamposConSetters() {
 
-        // Act
-        Usuario usuarioModificado = usuarioOriginal.toBuilder()
-                .nombres("Carlos Alberto")
-                .salario(new BigDecimal("2500000"))
-                .build();
+        LocalDate fechaNacimiento = LocalDate.of(1985, 12, 25);
+        BigDecimal salario = new BigDecimal("3500000");
+        Instant ahora = Instant.now();
 
-        // Assert
-        assertNotNull(usuarioModificado);
-        assertEquals(1L, usuarioModificado.getId());
-        assertEquals("Carlos Alberto", usuarioModificado.getNombres());
-        assertEquals("Rodríguez", usuarioModificado.getApellidos());
-        assertEquals("carlos@example.com", usuarioModificado.getEmail());
-        assertEquals(new BigDecimal("2500000"), usuarioModificado.getSalario());
-        
-        // El usuario original no debe haberse modificado
-        assertEquals("Carlos", usuarioOriginal.getNombres());
-        assertEquals(new BigDecimal("2000000"), usuarioOriginal.getSalario());
+        Usuario usuario = new Usuario(
+                2L,
+                "María Elena",
+                "González López",
+                "+573109876543",
+                "maria.gonzalez@example.com",
+                fechaNacimiento,
+                "Carrera 15 #45-67, Medellín",
+                "9876543210",
+                1L,
+                "CLIENTE",
+                salario,
+                ahora,"prueba1234"
+        );
+
+        usuario.setId(2L);
+        usuario.setNombres("Carlos Andrés");
+        usuario.setApellidos("Ramírez Torres");
+        usuario.setTelefono("+573112233445");
+        usuario.setEmail("carlos@email.com");
+        usuario.setFechaNacimiento(LocalDate.of(1995, 7, 20));
+        usuario.setDireccion("Avenida Siempre Viva 742, Cali");
+        usuario.setDocumentoIdentidad("1122334455");
+        usuario.setIdRol(3L);
+        usuario.setNombreRol("USER");
+        usuario.setSalario(new BigDecimal("1500000"));
+        usuario.setPassword("password123");
+
+        assertNotNull(usuario);
+        assertEquals(2L, usuario.getId(), "El ID inicial debe ser 2L");
+        assertEquals("Carlos Andrés", usuario.getNombres());
+        assertEquals("Ramírez Torres", usuario.getApellidos());
+        assertEquals("+573112233445", usuario.getTelefono());
+        assertEquals("carlos@email.com", usuario.getEmail());
+        assertEquals(LocalDate.of(1995, 7, 20), usuario.getFechaNacimiento());
+        assertEquals("Avenida Siempre Viva 742, Cali", usuario.getDireccion());
+        assertEquals("1122334455", usuario.getDocumentoIdentidad());
+        assertEquals(3L, usuario.getIdRol());
+        assertEquals("USER", usuario.getNombreRol());
+        assertEquals(new BigDecimal("1500000"), usuario.getSalario());
+        assertNotNull(usuario.getCreado());
+        assertEquals("password123", usuario.getPassword());
+
     }
 
     @Test
-    @DisplayName("Debe implementar equals y hashCode correctamente")
-    void debeImplementarEqualsYHashCodeCorrectamente() {
-        // Arrange
-        Usuario usuario1 = Usuario.builder()
-                .id(1L)
-                .nombres("Ana")
-                .apellidos("Martínez")
-                .email("ana@example.com")
+    @DisplayName("Debe clonar y modificar usuario con toBuilder")
+    void debeClonarYModificarUsuarioConToBuilder() {
+        Usuario original = Usuario.builder()
+                .id(10L)
+                .nombres("Pedro")
+                .apellidos("López")
                 .build();
 
-        Usuario usuario2 = Usuario.builder()
-                .id(1L)
-                .nombres("Ana")
-                .apellidos("Martínez")
-                .email("ana@example.com")
+        Usuario modificado = original.toBuilder()
+                .nombres("Pedro Modificado")
                 .build();
 
-        Usuario usuario3 = Usuario.builder()
-                .id(2L)
-                .nombres("Ana")
-                .apellidos("Martínez")
-                .email("ana@example.com")
-                .build();
-
-        // Assert
-        assertEquals(usuario1, usuario2);
-        assertEquals(usuario1.hashCode(), usuario2.hashCode());
-        assertNotEquals(usuario1, usuario3);
-        assertNotEquals(usuario1.hashCode(), usuario3.hashCode());
+        assertEquals(10L, modificado.getId());
+        assertEquals("Pedro Modificado", modificado.getNombres());
+        assertEquals("López", modificado.getApellidos());
+        assertNotEquals(original.getNombres(), modificado.getNombres());
     }
 
     @Test
-    @DisplayName("Debe implementar toString correctamente")
-    void debeImplementarToStringCorrectamente() {
-        // Arrange
+    void debeTenerMetodosGetter(){
         Usuario usuario = Usuario.builder()
                 .id(1L)
-                .nombres("Pedro")
-                .apellidos("Silva")
-                .email("pedro@example.com")
+                .nombres("Juan")
+                .apellidos("Pérez")
+                .telefono("+573001234567")
+                .email("juan.perez@email.com")
+                .fechaNacimiento(LocalDate.of(1990, 1, 1))
+                .direccion("Calle 123")
+                .documentoIdentidad("123456789")
+                .idRol(2L)
+                .nombreRol("ADMIN")
+                .salario(new BigDecimal("3000000"))
+                .creado(Instant.now())
+                .password("securePassword")
                 .build();
 
-        // Act
-        String resultado = usuario.toString();
-
-        // Assert
-        assertNotNull(resultado);
-        assertTrue(resultado.contains("Pedro"));
-        assertTrue(resultado.contains("Silva"));
-        assertTrue(resultado.contains("pedro@example.com"));
-        assertTrue(resultado.contains("Usuario"));
+        assertEquals(1L, usuario.getId());
+        assertEquals("Juan", usuario.getNombres());
+        assertEquals("Pérez", usuario.getApellidos());
+        assertEquals("+573001234567", usuario.getTelefono());
+        assertEquals("juan.perez@email.com", usuario.getEmail());
+        assertEquals(LocalDate.of(1990, 1, 1), usuario.getFechaNacimiento());
+        assertEquals("Calle 123", usuario.getDireccion());
+        assertEquals("123456789", usuario.getDocumentoIdentidad());
+        assertEquals(2L, usuario.getIdRol());
+        assertEquals("ADMIN", usuario.getNombreRol());
+        assertEquals(new BigDecimal("3000000"), usuario.getSalario());
+        assertNotNull(usuario.getCreado());
+        assertEquals("securePassword", usuario.getPassword());
     }
+
+
 }

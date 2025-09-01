@@ -20,18 +20,32 @@ public class RouterRest {
             @RouterOperation(
                     path = "/usuarios",
                     method = RequestMethod.POST,
-                    beanClass = Handler.class,
+                    beanClass = UsuarioHandler.class,
                     beanMethod = "registrar"
             ),
             @RouterOperation(
                     path = "/usuarios/cliente",
                     method = RequestMethod.GET,
-                    beanClass = Handler.class,
+                    beanClass = UsuarioHandler.class,
                     beanMethod = "consultarPorEmail"
+            ),
+            @RouterOperation(
+                    path = "/login",
+                    method = RequestMethod.POST,
+                    beanClass = LoginHandler.class,
+                    beanMethod = "login"
+            ),
+            @RouterOperation(
+                    path = "/usuarios/auth/validate",
+                    method = RequestMethod.POST,
+                    beanClass = TokenValidationHandler.class,
+                    beanMethod = "validateToken"
             )
     })
-    public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return RouterFunctions.route(POST("/usuarios"), handler::registrar)
-                .andRoute(GET("/usuarios/cliente"), handler::consultarPorEmail);
+    public RouterFunction<ServerResponse> routerFunction(UsuarioHandler usuarioHandler, LoginHandler loginHandler, TokenValidationHandler tokenValidationHandler) {
+        return RouterFunctions.route(POST("/usuarios"), usuarioHandler::registrar)
+                .andRoute(GET("/usuarios/cliente"), usuarioHandler::consultarPorEmail)
+                .andRoute(POST("/login"), loginHandler::login)
+                .andRoute(POST("/usuarios/auth/validate"), tokenValidationHandler::validateToken);
     }
 }

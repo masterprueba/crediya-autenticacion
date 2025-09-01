@@ -1,5 +1,6 @@
 package co.com.crediya.autenticacion.r2dbc;
 
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.*;
 class MyReactiveRepositoryAdapterTest {
 
     @Mock
-    private MyReactiveRepository repository;
+    private UsuarioMysqlRepository repository;
 
     @Mock
     private ObjectMapper mapper;
@@ -32,11 +33,14 @@ class MyReactiveRepositoryAdapterTest {
     @Mock
     private TransactionalOperator transactionalOperator;
 
-    private MyReactiveRepositoryAdapter adapter;
+    @Mock
+    private RoleMysqlRepository roleRepository;
+
+    private UsuarioMysqlRepositoryAdapter adapter;
 
     @BeforeEach
     void setUp() {
-        adapter = new MyReactiveRepositoryAdapter(repository, mapper, transactionalOperator);
+        adapter = new UsuarioMysqlRepositoryAdapter(repository, mapper, transactionalOperator, roleRepository);
     }
 
     @Test
@@ -74,7 +78,7 @@ class MyReactiveRepositoryAdapterTest {
                 .thenAnswer(inv -> inv.getArgument(0));
 
         StepVerifier.create(adapter.saveTransactional(usuario))
-                .expectError(co.com.crediya.autenticacion.model.usuario.exceptions.DomainException.class)
+                .expectError(DomainException.class)
                 .verify();
     }
 
@@ -84,11 +88,21 @@ class MyReactiveRepositoryAdapterTest {
         UsuarioEntity entity = new UsuarioEntity();
         entity.setId(7L);
         entity.setEmail("x@y.com");
+        entity.setIdRol(2L); // Asegúrate de usar setIdRol
+
+        // El Usuario mapeado debe tener el idRol
+        Usuario usuarioMapeado = Usuario.builder()
+                .id(7L)
+                .email("x@y.com")
+                .idRol(2L)
+                .build();
+
         when(repository.findByEmail("x@y.com")).thenReturn(Mono.just(entity));
-        when(mapper.map(entity, Usuario.class)).thenReturn(Usuario.builder().id(7L).email("x@y.com").build());
+        when(mapper.map(entity, Usuario.class)).thenReturn(usuarioMapeado);
+        when(roleRepository.findById(2L)).thenReturn(Mono.empty());
 
         StepVerifier.create(adapter.findByEmail("x@y.com"))
-                .expectNextMatches(u -> u.getId() == 7L && u.getEmail().equals("x@y.com"))
+                .expectNextMatches(u -> u.getId() == 7L && u.getEmail().equals("x@y.com") && u.getNombreRol().equals("CLIENTE"))
                 .verifyComplete();
     }
 

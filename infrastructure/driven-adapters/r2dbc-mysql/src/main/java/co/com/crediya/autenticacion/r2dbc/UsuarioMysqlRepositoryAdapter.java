@@ -1,8 +1,9 @@
 package co.com.crediya.autenticacion.r2dbc;
 
 import co.com.crediya.autenticacion.model.usuario.Usuario;
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
+import co.com.crediya.autenticacion.r2dbc.entity.RoleEntity;
 import co.com.crediya.autenticacion.r2dbc.entity.UsuarioEntity;
 import co.com.crediya.autenticacion.r2dbc.helper.ReactiveAdapterOperations;
 
@@ -15,24 +16,22 @@ import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
+public class UsuarioMysqlRepositoryAdapter extends ReactiveAdapterOperations<
         Usuario,
         UsuarioEntity,
-        Long, 
-        MyReactiveRepository
+        Long,
+        UsuarioMysqlRepository
 > implements UsuarioRepository {
     private final TransactionalOperator transactionalOperator;
-    private static final Logger log = LoggerFactory.getLogger(MyReactiveRepositoryAdapter.class);
+    private final RoleMysqlRepository roleRepository;
+    private static final Logger log = LoggerFactory.getLogger(UsuarioMysqlRepositoryAdapter.class);
     
-    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper, 
-                                      TransactionalOperator transactionalOperator) {
-        /**
-         *  Could be use mapper.mapBuilder if your domain model implement builder pattern
-         *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
-         *  Or using mapper.map with the class of the object model
-         */
+    public UsuarioMysqlRepositoryAdapter(UsuarioMysqlRepository repository, ObjectMapper mapper,
+                                         TransactionalOperator transactionalOperator, RoleMysqlRepository roleRepository) {
+
         super(repository, mapper, d -> mapper.map(d, Usuario.class));
         this.transactionalOperator = transactionalOperator;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -65,6 +64,15 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         Mono<UsuarioEntity> user = repository.findByEmail(email);
         return user
                 .map(this::toEntity)
+                .flatMap(usuarioRol -> roleRepository.findById(usuarioRol.getIdRol())
+                        .map(RoleEntity::getNombre)
+                        .defaultIfEmpty("CLIENTE")
+                        .map(nombreRol -> {
+                            usuarioRol.setNombreRol(nombreRol);
+                            return usuarioRol;
+                        })
+                        .defaultIfEmpty(usuarioRol)
+                )
                 .doOnNext(u -> log.info("Usuario encontrado: {}", u))
                 .doOnSuccess(u -> {               // se ejecuta al completar exitosamente
                     if (u != null) {
@@ -73,7 +81,7 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                         log.warn("Usuario NO encontrado email={}", email); // Mono.empty()
                     }
                 })
-                .doOnError(e -> log.error("Error consultando usuario email={}", email, e));
+                .doOnError(e -> log.error("Error consultando usuario email={}", email));
 
     }
 

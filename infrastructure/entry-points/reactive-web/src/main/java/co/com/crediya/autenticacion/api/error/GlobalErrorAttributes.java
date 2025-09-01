@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {

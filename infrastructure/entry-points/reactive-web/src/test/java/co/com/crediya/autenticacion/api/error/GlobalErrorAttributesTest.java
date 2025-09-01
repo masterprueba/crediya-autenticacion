@@ -1,6 +1,6 @@
 package co.com.crediya.autenticacion.api.error;
 
-import co.com.crediya.autenticacion.model.usuario.exceptions.DomainException;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.http.codec.support.DefaultServerCodecConfigurer;

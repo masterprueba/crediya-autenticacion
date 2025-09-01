@@ -1,9 +1,10 @@
-package co.com.crediya.autenticacion.model.usuario.exceptions;
+package co.com.crediya.autenticacion.model.exceptions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 @DisplayName("Tests para DomainException")
 class DomainExceptionTest {

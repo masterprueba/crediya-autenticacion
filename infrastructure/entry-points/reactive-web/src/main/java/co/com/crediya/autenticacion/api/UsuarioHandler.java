@@ -28,10 +28,10 @@ import java.time.Instant;
 @Component
 @RequiredArgsConstructor
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con la gestión de usuarios")
-public class Handler {
+public class UsuarioHandler {
     private final RegistrarUsuarioUseCase registrarUseCase;
     private final ConsultarUsuarioUseCase consultarUseCase;
-    private static final Logger log = LoggerFactory.getLogger(Handler.class);
+    private static final Logger log = LoggerFactory.getLogger(UsuarioHandler.class);
     private final UsuarioMapper usuarioMapper;
 
     @Operation(
