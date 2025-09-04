@@ -8,6 +8,6 @@ import java.util.Map;
 public interface LoginRepository {
 
      Mono<String> generate(String sub, String email, String rol, Map<String,Object> extra, Instant exp);
-     JwtPayload verify(String token); // lanza DomainException si inválido
+     JwtPayload verify(String token);
      record JwtPayload(String subject, String email, String rol) {}
 }

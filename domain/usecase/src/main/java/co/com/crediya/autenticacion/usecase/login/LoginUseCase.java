@@ -34,7 +34,7 @@ public class LoginUseCase {
                           userValido.getEmail(),
                           userValido.getNombreRol(),
                           Map.of("Nombre", userValido.getNombres() + " " + userValido.getApellidos()),
-                          Instant.now().plus(Duration.ofMinutes(1))
+                          Instant.now().plus(Duration.ofMinutes(30))
                   ));
     }
 }
