@@ -2,6 +2,7 @@ package co.com.crediya.autenticacion.api;
 
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
 import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
@@ -213,7 +214,7 @@ class UsuarioHandlerTest {
         MockServerWebExchange exchange = MockServerWebExchange.from(httpRequest);
         ServerRequest serverRequest = ServerRequest.create(exchange, new DefaultServerCodecConfigurer().getReaders());
 
-        assertThrows(IllegalArgumentException.class, () -> usuarioHandler.consultarPorEmail(serverRequest));
+        assertThrows(DomainException.class, () -> usuarioHandler.consultarPorEmail(serverRequest));
     }
 
     @Test

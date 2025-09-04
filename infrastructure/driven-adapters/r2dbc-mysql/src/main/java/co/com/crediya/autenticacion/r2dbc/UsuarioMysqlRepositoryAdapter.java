@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.reactive.TransactionalOperator;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 
 @Repository
 public class UsuarioMysqlRepositoryAdapter extends ReactiveAdapterOperations<
@@ -85,5 +87,14 @@ public class UsuarioMysqlRepositoryAdapter extends ReactiveAdapterOperations<
 
     }
 
+    // Consulta usuarios por rol
+    @Override
+    public Flux<Usuario> findByRol(Long rol) {
+        return repository.findAll()
+                .filter(usuarioEntity -> usuarioEntity.getIdRol().equals(rol))
+                .map(this::toEntity)
+                .doOnComplete(() -> log.info("Consulta de usuarios por rol {} completada", rol))
+                .doOnError(e -> log.error("Error consultando usuarios por rol {}: {}", rol, e.getMessage()));
+    }
 
 }

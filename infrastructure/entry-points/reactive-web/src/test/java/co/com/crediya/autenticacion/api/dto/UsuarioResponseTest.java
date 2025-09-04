@@ -3,13 +3,15 @@ package co.com.crediya.autenticacion.api.dto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UsuarioResponseTest {
 
     @Test
     void debeSerializarYDeserializar() throws Exception {
-        UsuarioResponse resp = new UsuarioResponse("Juan Pérez", "juan@ejemplo.com", "123");
+        UsuarioResponse resp = new UsuarioResponse("Juan Pérez", "juan@ejemplo.com", "123",new BigDecimal("2500.00"));
         ObjectMapper mapper = new ObjectMapper();
 
         String json = mapper.writeValueAsString(resp);
