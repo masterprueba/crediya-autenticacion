@@ -3,6 +3,7 @@ package co.com.crediya.autenticacion.api;
 import co.com.crediya.autenticacion.api.dto.RegistrarUsuarioRequest;
 import co.com.crediya.autenticacion.api.dto.UsuarioResponse;
 import co.com.crediya.autenticacion.api.mapper.UsuarioMapper;
+import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.usecase.consultarusuario.ConsultarUsuarioUseCase;
 import co.com.crediya.autenticacion.usecase.registrarusuario.RegistrarUsuarioUseCase;
@@ -147,11 +148,65 @@ public class UsuarioHandler {
                     )
             )
     })
+
     public Mono<ServerResponse> consultarPorEmail(ServerRequest req) {
-        String email = req.queryParam("email").orElseThrow(() -> new IllegalArgumentException("El parámetro 'email' es requerido"));
+        String email = req.queryParam("email").orElseThrow(() -> new DomainException("El parámetro 'email' es requerido"));
         return consultarUseCase.ejecutar(email)
                 .map(usuarioMapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response));
+    }
+
+    @Operation(
+            summary = "Consultar Usuarios por Rol",
+            description = "Consulta usuarios en el sistema filtrados por el rol especificado. " +
+                    "Si no se proporciona un rol, se utiliza el rol por defecto (4 - Cliente).",
+            operationId = "consultarUsuariosPorRol"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Consulta exitosa"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos de entrada inválidos. Puede ser por: no se encontraron usuarios con el rol especificado.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(example = """
+                                    {
+                                      "status": 400,
+                                      "codigo": "DATOS_INVALIDOS",
+                                      "mensaje": "La información proporcionada es inválida. No se encontraron usuarios con el rol especificado",
+                                      "ruta": "/api/v1/usuarios"
+                                    }
+                                    """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Error interno del servidor",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(example = """
+                                    {
+                                      "status": 500,
+                                      "codigo": "ERROR_INTERNO",
+                                      "mensaje": "Ha ocurrido un error inesperado en el sistema. Por favor, contacte a soporte.",
+                                      "ruta": "/api/v1/usuarios"
+                                    }
+                                    """)
+                    )
+            )
+    })
+    public Mono<ServerResponse> consultaruUsuarios(ServerRequest req) {
+        Long rol = Long.valueOf(req.pathVariable("rolId"));
+        return consultarUseCase.consultarUsuariios(rol)
+                .flatMap(usuarios -> {
+                    var responses = usuarios.stream()
+                            .map(usuarioMapper::toResponse)
+                            .toList();
+                    return ServerResponse.ok().bodyValue(responses);
+                });
     }
 
     private Usuario toDomain(RegistrarUsuarioRequest registrarUsuarioRequest) {
