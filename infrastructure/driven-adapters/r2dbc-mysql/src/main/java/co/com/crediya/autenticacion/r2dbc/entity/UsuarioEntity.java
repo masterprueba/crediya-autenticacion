@@ -24,7 +24,7 @@ public class UsuarioEntity {
     @Column("apellido")
     private String apellidos;
     private String telefono;
-    @Column("fecha_nacimiento")
+        @Column("fecha_nacimiento")
     private LocalDate fechaNacimiento;
     private String direccion;
     private String email;

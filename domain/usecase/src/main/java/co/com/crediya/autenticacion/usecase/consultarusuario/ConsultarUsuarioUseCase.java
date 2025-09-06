@@ -12,7 +12,7 @@ import java.util.List;
 public class ConsultarUsuarioUseCase {
 
     private final UsuarioRepository usuarioRepository;
-    private static final Long ROL_CLIENTE = 4L;
+    private static final Long ROL_CLIENTE = 3L;
 
     public Mono<Usuario> ejecutar(String email) {
         return usuarioRepository.findByEmail(email)

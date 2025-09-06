@@ -19,7 +19,7 @@ class UsuarioMapperTest {
     void debeMapearRequestADomain() {
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Juan", "Pérez", "+573001", LocalDate.of(1990,1,1),
-                "Calle", "juan@example.com", "123", 2L, new BigDecimal("1000")
+                "Calle", "juan@example.com", "123", 2L, new BigDecimal("1000"),"P@ssw0rd!"
         );
 
         Usuario usuario = mapper.toDomain(request);
@@ -30,6 +30,7 @@ class UsuarioMapperTest {
         assertEquals(new BigDecimal("1000"), usuario.getSalario());
         assertEquals(LocalDate.of(1990,1,1), usuario.getFechaNacimiento());
         assertEquals("juan@example.com", usuario.getEmail());
+        assertEquals("P@ssw0rd!", usuario.getPassword());
     }
 
     @Test

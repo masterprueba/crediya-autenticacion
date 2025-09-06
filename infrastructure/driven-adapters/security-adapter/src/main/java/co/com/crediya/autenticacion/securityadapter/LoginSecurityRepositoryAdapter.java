@@ -20,7 +20,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 @Repository
 public class LoginSecurityRepositoryAdapter implements LoginRepository {
 
-    private String secret;
+    private final String secret;
 
     public LoginSecurityRepositoryAdapter(@Value("${app.secret.key}") String secret) {
         this.secret = secret;

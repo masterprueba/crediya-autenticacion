@@ -70,15 +70,16 @@ class UsuarioHandlerTest {
                 "juan.perez@example.com",
                 "1234567890",
                 2L,
-                new BigDecimal("2500000")
+                new BigDecimal("2500000"),
+                "P@ssw0rd!"
         );
 
-        // Act
+
         Usuario usuarioMapeado = invocarToDomain(request);
 
-        // Assert
+  
         assertNotNull(usuarioMapeado);
-        assertNull(usuarioMapeado.getId()); // Debe ser null porque es un nuevo usuario
+        assertNull(usuarioMapeado.getId()); 
         assertEquals("Juan Carlos", usuarioMapeado.getNombres());
         assertEquals("Pérez García", usuarioMapeado.getApellidos());
         assertEquals("+573001234567", usuarioMapeado.getTelefono());
@@ -86,17 +87,17 @@ class UsuarioHandlerTest {
         assertEquals(LocalDate.of(1990, 5, 15), usuarioMapeado.getFechaNacimiento());
         assertEquals("Calle Falsa 123", usuarioMapeado.getDireccion());
         assertEquals("1234567890", usuarioMapeado.getDocumentoIdentidad());
-        assertEquals(2L, usuarioMapeado.getIdRol()); // Se asigna por defecto
+        assertEquals(2L, usuarioMapeado.getIdRol()); 
         assertEquals(new BigDecimal("2500000"), usuarioMapeado.getSalario());
-        assertNotNull(usuarioMapeado.getCreado()); // Debe tener timestamp de creación
+        assertNotNull(usuarioMapeado.getCreado());
     }
 
     @Test
     @DisplayName("Debe mapear DTO con campos nulos")
     void debeMapearDTOConCamposNulos() throws Exception {
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
-                null, null, null, null, null, null, null, null, null
-        );
+                null, null, null, null, null, null, null, null, null,
+       null );
 
         Usuario usuarioMapeado = invocarToDomain(request);
 
@@ -109,9 +110,9 @@ class UsuarioHandlerTest {
         assertNull(usuarioMapeado.getFechaNacimiento());
         assertNull(usuarioMapeado.getDireccion());
         assertNull(usuarioMapeado.getDocumentoIdentidad());
-        assertEquals(2L, usuarioMapeado.getIdRol()); // Se asigna por defecto
+        assertEquals(2L, usuarioMapeado.getIdRol());
         assertNull(usuarioMapeado.getSalario());
-        assertNotNull(usuarioMapeado.getCreado()); // Siempre se asigna
+        assertNotNull(usuarioMapeado.getCreado());
     }
 
     @Test
@@ -119,7 +120,7 @@ class UsuarioHandlerTest {
     void debeAsignarRolPorDefectoComo2L() throws Exception {
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Ana", "García", "+573001234567", LocalDate.of(1990, 1, 1),
-                "Calle 123", "ana@example.com", "1234567890", 1L, new BigDecimal("1000000")
+                "Calle 123", "ana@example.com", "1234567890", 2L, new BigDecimal("1000000"),"P@ssw0rd!"
         );
 
         Usuario usuarioMapeado = invocarToDomain(request);
@@ -131,7 +132,8 @@ class UsuarioHandlerTest {
     @DisplayName("Debe asignar timestamp de creación automáticamente")
     void debeAsignarTimestampDeCreacionAutomaticamente() throws Exception {
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
-                "Pedro", "Silva", null, null, null, "pedro@example.com", null, null, new BigDecimal("1500000")
+                "Pedro", "Silva", null, null, null, "pedro@example.com",
+                null, null, new BigDecimal("1500000"),"P@ssw0rd!"
         );
 
         Usuario usuarioMapeado = invocarToDomain(request);
@@ -152,7 +154,8 @@ class UsuarioHandlerTest {
                 "maria.gonzalez@example.com",
                 "9876543210",
                 1L,
-                new BigDecimal("5000000.50")
+                new BigDecimal("5000000.50"),
+                "P@ssw0rd!"
         );
 
         Usuario usuarioMapeado = invocarToDomain(request);

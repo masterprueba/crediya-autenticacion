@@ -212,7 +212,6 @@ public class UsuarioHandler {
     private Usuario toDomain(RegistrarUsuarioRequest registrarUsuarioRequest) {
         Usuario usuario = usuarioMapper.toDomain(registrarUsuarioRequest);
         return usuario.toBuilder()
-                .idRol(2L)
                 .creado(Instant.now())
                 .build();
     }

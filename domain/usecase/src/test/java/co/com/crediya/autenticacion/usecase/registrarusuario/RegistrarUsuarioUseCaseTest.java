@@ -1,5 +1,6 @@
 package co.com.crediya.autenticacion.usecase.registrarusuario;
 
+import co.com.crediya.autenticacion.model.login.gateways.PasswordEncoderPort;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.model.exceptions.DomainException;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
@@ -28,6 +29,9 @@ class RegistrarUsuarioUseCaseTest {
 
     private RegistrarUsuarioUseCase registrarUsuarioUseCase;
 
+    @Mock
+    private PasswordEncoderPort passwordEncoderPort;
+
     private Usuario usuarioValido;
 
     @BeforeEach
@@ -35,7 +39,7 @@ class RegistrarUsuarioUseCaseTest {
         // Reset mocks before each test
         reset(usuarioRepository);
         
-        registrarUsuarioUseCase = new RegistrarUsuarioUseCase(usuarioRepository);
+        registrarUsuarioUseCase = new RegistrarUsuarioUseCase(usuarioRepository, passwordEncoderPort);
 
         usuarioValido = Usuario.builder()
                 .nombres("Juan Carlos")
@@ -54,7 +58,7 @@ class RegistrarUsuarioUseCaseTest {
     @DisplayName("Debe registrar usuario exitosamente cuando es válido y el correo no existe")
     void debeRegistrarUsuarioExitosamenteCuandoEsValidoYElCorreoNoExiste() {
         // Arrange
-        Usuario usuarioGuardado = usuarioValido.toBuilder().id(1L).build();
+        Usuario usuarioGuardado = usuarioValido.toBuilder().id(1L).password("asadad").build();
         
         when(usuarioRepository.existsByCorreo("juan.perez@example.com")).thenReturn(Mono.just(false));
         when(usuarioRepository.saveTransactional(any(Usuario.class))).thenReturn(Mono.just(usuarioGuardado));
@@ -271,6 +275,7 @@ class RegistrarUsuarioUseCaseTest {
         // Arrange
         Usuario usuarioConSalarioMinimo = usuarioValido.toBuilder()
                 .salario(BigDecimal.ZERO)
+                .password("NuevoP@ssw0rd1")
                 .build();
 
         Usuario usuarioGuardado = usuarioConSalarioMinimo.toBuilder().id(1L).build();
@@ -293,6 +298,7 @@ class RegistrarUsuarioUseCaseTest {
         // Arrange
         Usuario usuarioConSalarioMaximo = usuarioValido.toBuilder()
                 .salario(new BigDecimal("15000000"))
+                .password("NewP@ssw0rd1")
                 .build();
 
         Usuario usuarioGuardado = usuarioConSalarioMaximo.toBuilder().id(1L).build();
@@ -325,6 +331,7 @@ class RegistrarUsuarioUseCaseTest {
         for (String email : emailsValidos) {
             Usuario usuarioConEmail = usuarioValido.toBuilder()
                     .email(email)
+                    .password("ValidP@ss1")
                     .build();
 
             Usuario usuarioGuardado = usuarioConEmail.toBuilder().id(1L).build();

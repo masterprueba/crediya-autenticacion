@@ -32,7 +32,7 @@ class ConsultarUsuarioUseCaseTest {
     @Test
     @DisplayName("Debe devolver usuario con rol cliente")
     void debeDevolverUsuarioConRolCliente() {
-        Usuario usuario = Usuario.builder().idRol(4L).email("a@b.com").build();
+        Usuario usuario = Usuario.builder().idRol(3L).email("a@b.com").build();
         when(usuarioRepository.findByEmail("a@b.com")).thenReturn(Mono.just(usuario));
 
         StepVerifier.create(useCase.ejecutar("a@b.com"))
