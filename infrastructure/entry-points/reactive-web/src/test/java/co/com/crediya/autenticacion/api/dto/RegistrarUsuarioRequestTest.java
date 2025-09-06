@@ -34,11 +34,12 @@ class RegistrarUsuarioRequestTest {
         String documentoIdentidad = "1234567890";
         Long rol = 2L;
         BigDecimal salarioBase = new BigDecimal("2500000");
+        String contrasena = "P@ssw0rd!";
 
         // Act
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 nombres, apellidos, telefono, fechaNacimiento, direccion,
-                correoElectronico, documentoIdentidad, rol, salarioBase
+                correoElectronico, documentoIdentidad, rol, salarioBase,contrasena
         );
 
         // Assert
@@ -59,7 +60,7 @@ class RegistrarUsuarioRequestTest {
     void debeCrearRequestConCamposNulos() {
         // Act
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
-                null, null, null, null, null, null, null, null, null
+                null, null, null, null, null, null, null, null, null,null
         );
 
         // Assert
@@ -81,7 +82,7 @@ class RegistrarUsuarioRequestTest {
         // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Ana", "García", "+573001234567", LocalDate.of(1985, 12, 25),
-                "Carrera 15 #45-67", "ana@example.com", "9876543210", 1L, new BigDecimal("3000000")
+                "Carrera 15 #45-67", "ana@example.com", "9876543210", 1L, new BigDecimal("3000000"),"P@ssw0rd!"
         );
 
         // Act
@@ -98,6 +99,7 @@ class RegistrarUsuarioRequestTest {
         assertTrue(json.contains("\"documento_identidad\":\"9876543210\""));
         assertTrue(json.contains("\"rol\":1"));
         assertTrue(json.contains("\"salario_base\":3000000"));
+        assertTrue(json.contains("\"contraseña\":\"P@ssw0rd!\""));
     }
 
     @Test
@@ -114,7 +116,8 @@ class RegistrarUsuarioRequestTest {
                 "correo_electronico": "pedro@example.com",
                 "documento_identidad": "1122334455",
                 "rol": 2,
-                "salario_base": 4500000
+                "salario_base": 4500000,
+                "contraseña": "SecureP@ss1!"
             }
             """;
 
@@ -132,6 +135,7 @@ class RegistrarUsuarioRequestTest {
         assertEquals("1122334455", request.documento_identidad());
         assertEquals(2L, request.rol());
         assertEquals(new BigDecimal("4500000"), request.salario_base());
+        assertEquals("SecureP@ss1!", request.contraseña());
     }
 
     @Test
@@ -203,17 +207,17 @@ class RegistrarUsuarioRequestTest {
         // Arrange
         RegistrarUsuarioRequest request1 = new RegistrarUsuarioRequest(
                 "Juan", "Pérez", "+573001234567", LocalDate.of(1990, 5, 15),
-                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000")
+                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000"),"P@ssw0rd!"
         );
 
         RegistrarUsuarioRequest request2 = new RegistrarUsuarioRequest(
                 "Juan", "Pérez", "+573001234567", LocalDate.of(1990, 5, 15),
-                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000")
+                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000"),"P@ssw0rd!"
         );
 
         RegistrarUsuarioRequest request3 = new RegistrarUsuarioRequest(
                 "Ana", "García", "+573001234567", LocalDate.of(1990, 5, 15),
-                "Calle 123", "ana@example.com", "1234567890", 2L, new BigDecimal("2500000")
+                "Calle 123", "ana@example.com", "1234567890", 2L, new BigDecimal("2500000"),"P@ssw0rd!"
         );
 
         // Assert
@@ -228,12 +232,12 @@ class RegistrarUsuarioRequestTest {
         // Arrange
         RegistrarUsuarioRequest request1 = new RegistrarUsuarioRequest(
                 "Juan", "Pérez", "+573001234567", LocalDate.of(1990, 5, 15),
-                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000")
+                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000"),"P@ssw0rd!"
         );
 
         RegistrarUsuarioRequest request2 = new RegistrarUsuarioRequest(
                 "Juan", "Pérez", "+573001234567", LocalDate.of(1990, 5, 15),
-                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000")
+                "Calle 123", "juan@example.com", "1234567890", 2L, new BigDecimal("2500000"),"P@ssw0rd!"
         );
 
         // Assert
@@ -246,7 +250,7 @@ class RegistrarUsuarioRequestTest {
         // Arrange
         RegistrarUsuarioRequest request = new RegistrarUsuarioRequest(
                 "Diego", "Morales", "+573001234567", LocalDate.of(1988, 3, 22),
-                "Avenida 68 #40-50", "diego@example.com", "5566778899", 1L, new BigDecimal("3200000")
+                "Avenida 68 #40-50", "diego@example.com", "5566778899", 1L, new BigDecimal("3200000"),"P@ssw0rd!"
         );
 
         // Act

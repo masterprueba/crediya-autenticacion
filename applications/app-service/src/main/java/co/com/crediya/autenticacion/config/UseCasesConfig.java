@@ -21,8 +21,8 @@ import org.springframework.context.annotation.FilterType;
 public class UseCasesConfig {
 
     @Bean
-    public RegistrarUsuarioUseCase registrarUsuarioUseCase(UsuarioRepository usuarioRepository) {
-        return new RegistrarUsuarioUseCase(usuarioRepository);
+    public RegistrarUsuarioUseCase registrarUsuarioUseCase(UsuarioRepository usuarioRepository, PasswordEncoderPort passwordEncoderPort) {
+        return new RegistrarUsuarioUseCase(usuarioRepository, passwordEncoderPort);
     }
 
     @Bean

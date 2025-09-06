@@ -27,3 +27,10 @@ bootJar {
     // Sets output jar name
     archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
 }
+
+test {
+    environment "SPRING_R2DBC_URL", "r2dbc:pool:mysql://mysql-autenticacion:3306/db-autenticacion"
+    environment "SPRING_R2DBC_USERNAME", "root"
+    environment "SPRING_R2DBC_PASSWORD", "root"
+    environment "SECRET_KEY", "cQn4kIA-XUaDuZlorh2lk3Ujwepk1vjRIHJOKIdTis8"
+}

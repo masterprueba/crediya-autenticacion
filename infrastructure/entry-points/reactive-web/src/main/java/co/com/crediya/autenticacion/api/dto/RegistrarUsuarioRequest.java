@@ -23,5 +23,7 @@ public record RegistrarUsuarioRequest(
         @Schema(description = "Rol .", example = "ADMIN,USER,MANAGER")
         Long rol,
         @Schema(description = "Salario base mensual.", example = "2500000", requiredMode = Schema.RequiredMode.REQUIRED)
-        BigDecimal salario_base
+        BigDecimal salario_base,
+        @Schema(description = "Contraseña del usuario.", example = "P@ssw0rd!", requiredMode = Schema.RequiredMode.REQUIRED)
+        String contraseña
 ) {}

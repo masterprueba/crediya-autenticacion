@@ -12,10 +12,10 @@ public interface UsuarioMapper {
     @Mapping(target = "creado", ignore = true)
     @Mapping(source = "fecha_nacimiento",target = "fechaNacimiento")
     @Mapping(source = "documento_identidad",target = "documentoIdentidad")
-    @Mapping(source = "rol",target = "idRol")
+    @Mapping(source= "rol", target = "idRol", defaultValue = "2L")
     @Mapping(source = "salario_base",target = "salario")
     @Mapping(source = "correo_electronico",target = "email")
-    @Mapping(target = "password",ignore = true)
+    @Mapping(source = "contraseña",target = "password")
     @Mapping(target = "nombreRol", ignore = true)
     Usuario toDomain(RegistrarUsuarioRequest r);
 
