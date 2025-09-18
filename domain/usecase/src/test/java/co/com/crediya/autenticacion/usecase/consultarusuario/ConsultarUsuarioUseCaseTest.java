@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -57,6 +58,29 @@ class ConsultarUsuarioUseCaseTest {
         when(usuarioRepository.findByEmail("a@b.com")).thenReturn(Mono.just(usuario));
 
         StepVerifier.create(useCase.ejecutar("a@b.com"))
+                .expectError(DomainException.class)
+                .verify();
+    }
+
+
+    @Test
+    @DisplayName("Debe devolver lista de usuarios por rol")
+    void debeDevolverListaDeUsuariosPorRol() {
+        Usuario usuario1 = Usuario.builder().idRol(3L).email("a@b.com").build();
+        Usuario usuario2 = Usuario.builder().idRol(3L).email("b@b.com").build();
+        when(usuarioRepository.findByRol(3L)).thenReturn(Flux.just(usuario1, usuario2));
+
+        StepVerifier.create(useCase.consultarUsuariios(3L))
+                .expectNextMatches(lista -> lista.size() == 2 && lista.contains(usuario1) && lista.contains(usuario2))
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Debe fallar si no hay usuarios con el rol especificado")
+    void debeFallarSiNoHayUsuariosConRol() {
+        when(usuarioRepository.findByRol(99L)).thenReturn(Flux.empty());
+
+        StepVerifier.create(useCase.consultarUsuariios(99L))
                 .expectError(DomainException.class)
                 .verify();
     }
