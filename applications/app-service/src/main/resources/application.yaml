@@ -4,6 +4,8 @@ server:
     include-exception: true
     include-message: always
 spring:
+  main:
+    web-application-type: reactive
   webflux:
     base-path: /api/v1
   application:
