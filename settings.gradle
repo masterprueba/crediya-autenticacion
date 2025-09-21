@@ -26,3 +26,5 @@ include ':r2dbc-mysql'
 project(':r2dbc-mysql').projectDir = file('./infrastructure/driven-adapters/r2dbc-mysql')
 include ':security-adapter'
 project(':security-adapter').projectDir = file('./infrastructure/driven-adapters/security-adapter')
+include ':metrics'
+project(':metrics').projectDir = file('./infrastructure/helpers/metrics')
