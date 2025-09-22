@@ -7,7 +7,7 @@ spring:
   main:
     web-application-type: reactive
   webflux:
-    base-path: /api/v1
+    base-path: /auth/api/v1
   application:
     name: "autenticacion"
   devtools:
